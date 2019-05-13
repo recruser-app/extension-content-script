@@ -1,0 +1,24 @@
+:root {
+    --main-color: #0ca789;
+}
+
+.recruser-theme-btn {
+    color: grey;
+    border: 1px solid var(--main-color) !important;
+    border-radius: 5px;
+    width: 100px;
+    text-align: center;
+    padding: 6px 0;
+    background-color: white;
+    cursor: pointer;
+    font-size: 13px;
+}
+.recruser-theme-btn:hover {
+    color: white;
+    background-color: var(--main-color) !important;
+    text-decoration: none;
+}
+
+.recruser input:hover, select:hover, textarea:hover {
+    border: 1px solid var(--main-color) !important;
+}
