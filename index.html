@@ -9,111 +9,34 @@
 </head>
 
 <body>
+    <!--http://recruser.com/extension-content-script/-->
     <div id="recruser-save-cv-block">
-        <style>
-            :root {
-                --main-color: #0ca789;
-            }
+        <link rel="stylesheet" href="http://recruser.com/extension-content-script/save-cv.css?v=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.4/awesomplete.min.css" />
 
-            .recruser-theme-btn {
-                color: grey;
-                border: 1px solid var(--main-color) !important;
-                border-radius: 5px;
-                width: 100px;
-                text-align: center;
-                padding: 6px 0;
-                background-color: white;
-                cursor: pointer;
-                font-size: 13px;
-            }
+        <div id="saveCv-step">
+            <button style="display:none" id="recruser-save-btn" class="recruser-theme-btn">Save CV</button>
+            <span style="display:none" id="recruser-user-in-db">Profile already saved. <a>Go to profile</a></span>
+        </div>
+        <div style="display:none" class="recruser recruser-autocomplete" id="recruser-selectVacancy-step">
+            <input placeholder="Select vacancy" id="recruser-selectVacancy-autocomplete" />
+            <a id="recruser-selectVacancy-next-step" class="recruser-next-step" href="#"> >></a>
+        </div>
+        <div style="display:none" class="recruser recruser-autocomplete" id="recruser-selectStep-step">
+            <input placeholder="Select step" id="recruser-selectStep-autocomplete" />
+            <a id="recruser-selectStep-next-step" class="recruser-next-step" href="#"> >></a>
+        </div>
 
-            .recruser-theme-btn:hover {
-                color: white;
-                background-color: var(--main-color) !important;
-                text-decoration: none;
-            }
+        <div style="display:none" class="recruser recruser-done" id="recruser-done-step">
+            <span>Cv saved</span>
+        </div>
+    
 
-            .recruser input:hover,
-            select:hover,
-            textarea:hover {
-                border: 1px solid var(--main-color) !important;
-            }
-        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.4/awesomplete.min.js" defer></script>
+        <script src="http://recruser.com/extension-content-script/shared.js?v=1" defer></script>
+        <script src="http://recruser.com/extension-content-script/save-cv.js?v=1" defer></script>
 
-        <button id="recruser-save-btn" class="recruser-theme-btn">Save CV from page 2</button>
-        <div id="recruser-steps"></div>
-
-        <script>
-            console.log('loaded');
-            document.addEventListener('click', function (e) {
-
-                if (!e.target || e.target.id != 'recruser-save-btn') {
-                    return;
-                }
-
-                console.log('clicked');
-                alert('clicked');
-                let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMT0NBTCBBVVRIT1JJVFkiOiJBdXRoU2VydmVyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJlYzFAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUmVjcnVpdGVyIiwibmJmIjoxNTU3NzQwMzE3LCJleHAiOjE1NTgzNDUxMTcsImlzcyI6IkF1dGhTZXJ2ZXIiLCJhdWQiOiJBYXJzZXJBcGkifQ.tJZp4GFKJpTu_gnTVcWz1z2BFsgZB1ZbDWD0kRmKV4s";
-                makeAsyncXhrRequest('GET', `http://localhost:57492/step-systems`, {
-                    token: token
-                }).then(res => {
-                    document.getElementById('recruser-steps').textContent = res.body;
-                    console.log(JSON.parse(res.body));
-                });
-            });
-
-            function makeAsyncXhrRequest(method, url, options) {
-                return new Promise((resolve, reject) => {
-
-                    if (options === undefined) options = {}
-                    if (options.body === undefined) options.body = '';
-                    if (options.headers === undefined) options.headers = [];
-                    if (options.token === undefined) options.token = '';
-
-                    let xhr = new XMLHttpRequest()
-                    xhr.open(method, url, true);
-
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.setRequestHeader('Authorization', `Bearer ${options.token}`);
-                    for (var i = 0; i < options.headers.length; i++) {
-                        xhr.setRequestHeader(options.headers[i].key, options.headers[i].value);
-                    }
-                    xhr.onload = function () {
-                        if (xhr.status < 401) {
-                            return resolve({ status: xhr.status, body: xhr.response });
-                        } else if (xhr.status == 401) {
-                            return reject({ status: 401, body: 'Unauthorized' });
-                        } else if (xhr.status == 403) {
-                            return reject({ status: 403, body: 'Access forbidden' });
-                        } else if (xhr.status == 404) {
-                            return reject({ status: 404, body: 'Not found' });
-                        } else if (xhr.status == 500) {
-                            return reject({ status: 500, body: 'Internal server error occured' });
-                        } else {
-                            return reject({ status: xhr.status, body: xhr.responseText });
-                        }
-                    }
-                    //don't fire for ordinary responses (400, 401, 403, 404, 500 , ...)
-                    xhr.onerror = function () {
-                        return reject({ status: xhr.status, body: xhr.response });
-                    }
-                    xhr.send(JSON.stringify(options.body));
-                });
-            }
-        </script>
     </div>
-
-
-
-    <!-- <div id="recruser-save-cv-block">
-        <link rel="stylesheet" type="text/css" href="http://recruser.com/extension-content-script/save-btn.css">
-
-        <button id="recruser-save-btn" class="recruser-theme-btn">Save CV from page 2</button>
-        <div id="recruser-steps"></div>
-
-        <script src="http://recruser.com/extension-content-script/shared.js" type="text/javascript"></script>
-        <script src="http://recruser.com/extension-content-script/save-btn.js" type="text/javascript"></script>
-    </div> -->
 </body>
 
 </html>

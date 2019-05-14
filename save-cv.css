@@ -22,3 +22,23 @@
 .recruser input:hover, select:hover, textarea:hover {
     border: 1px solid var(--main-color) !important;
 }
+
+.recruser-autocomplete li {
+    border: 1px solid var(--main-color);
+}
+.recruser input {
+    border: 1px solid var(--main-color);
+    padding: 5px;
+    width: 200px
+}
+.recruser-autocomplete input:focus {
+    outline: none;
+    background-color: #defff9;
+}
+
+.recruser-next-step {
+    text-decoration: none;
+    color: var(--main-color);
+    margin: 0 5px;
+    font-weight: bold;
+}
