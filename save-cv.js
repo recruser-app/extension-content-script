@@ -75,6 +75,7 @@ function SetupSelectVacancyStep() {
     recruserSaveBlock.style.display = 'none';
     recruserSelectVacancyBlock.style.display = 'block';
 
+    //https://leaverou.github.io/awesomplete/#advanced-examples
     let autocomplete = new Awesomplete(recruserSelectVacancyAutocomplete, {
         minChars: 1,
         maxItems: 5
@@ -117,7 +118,7 @@ function setupSelectStepStep() {
     let autocomplete = new Awesomplete(recruserSelectStepAutocomplete, {
         minChars: 0,
         maxItems: 15,
-        sort: (a,b) => a.order > b.order
+        sort: (a, b) => a.order > b.order
     });
     fetchSteps(window.recruserVacancy.stepSystemId, window.recruserVacancy.relation).then(stepsystem => {
         window.recruserStepSystem = stepsystem;
@@ -144,17 +145,26 @@ function setupSelectStepStep() {
 function setupDoneStep() {
     recruserSelectStepBlock.style.display = 'none';
     recruserDoneBlock.style.display = 'block';
+
+    //TODO
+    //1. create endpoint that takes all info: CV, vacancyID, stepID
+    //or saveCV -> return ID - form and show Link
+    //meanwhile save candiate and add him to google sheet
+    //2. call asynchronously, don't waiting result
 }
 
 function parseCv() {
-    return fetch(`${getApiHost()}/parser/cv`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: {
-            url: '',//TODO: get current url
-            html: document.body
-        }
-    }).then(resp => resp.json());
+    // return fetch(`${getApiHost()}/parser/cv`, {
+    //     method: 'POST',
+    //     headers: getHeaders(),
+    //     body: {
+    //         url: '',//TODO: get current url
+    //         html: document.body
+    //     }
+    // }).then(resp => {
+    //     let cv = resp.json();
+    //     //save CV and return cvID to window variable
+    // });
 }
 
 function fetchVacancies(text) {
@@ -182,6 +192,25 @@ function getHeaders() {
     });
 }
 function getUserToken() {
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMT0NBTCBBVVRIT1JJVFkiOiJBdXRoU2VydmVyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJlYzFAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUmVjcnVpdGVyIiwibmJmIjoxNTU3NzQwMzE3LCJleHAiOjE1NTgzNDUxMTcsImlzcyI6IkF1dGhTZXJ2ZXIiLCJhdWQiOiJBYXJzZXJBcGkifQ.tJZp4GFKJpTu_gnTVcWz1z2BFsgZB1ZbDWD0kRmKV4s";
-    return token;
+    const dataStr = localStorage.getItem('recruserUser');
+    if (!dataStr || dataStr === 'null' || dataStr === 'undefined')
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMT0NBTCBBVVRIT1JJVFkiOiJBdXRoU2VydmVyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJlYzFAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUmVjcnVpdGVyIiwibmJmIjoxNTU3NzQwMzE3LCJleHAiOjE1NTgzNDUxMTcsImlzcyI6IkF1dGhTZXJ2ZXIiLCJhdWQiOiJBYXJzZXJBcGkifQ.tJZp4GFKJpTu_gnTVcWz1z2BFsgZB1ZbDWD0kRmKV4s";
+    return JSON.parse(dataStr).token;
 }
+
+async function isUrlSupported(url) {
+    let urlParts = await getSupportedUrlParts();
+    return urlParts.find(part => url.includes(part)) != null
+}
+
+async function getSupportedUrlParts() {
+    return await getOrCreateFromCacheAsync(
+        key = 'recruserSupportedUrlParts',
+        callback = async () => await fetch(`${getApiHost()}/parser/supported-urls`)
+            .then(resp => resp.json()),
+        minutes = 5);
+}
+
+(async () => {
+    console.log(await isUrlSupported('https://rabota.ua/cv/5777973'));
+})();
