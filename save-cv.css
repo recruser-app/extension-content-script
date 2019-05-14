@@ -33,12 +33,25 @@
 }
 .recruser-autocomplete input:focus {
     outline: none;
-    background-color: #defff9;
 }
 
 .recruser-next-step {
     text-decoration: none;
     color: var(--main-color);
     margin: 0 5px;
+    font-weight: bold;
+}
+
+.recruser-done {
+    border: 1px solid var(--main-color);
+    width: 200px;
+    text-align: center;
+    padding: 5px 0;
+    background-color: white;
+    color: grey !important;
+}
+.recruser-cv-profile {
+    color: var(--main-color) !important;
+    text-decoration: none;
     font-weight: bold;
 }

@@ -13,7 +13,10 @@ let recruserSelectStepNextStep = document.getElementById('recruser-selectStep-ne
 let recruserDoneBlock = document.getElementById('recruser-done-step');
 
 initSteps();
-setStep(window.RecruserNoneStep);
+
+(async () => {
+    await setStep(window.RecruserNoneStep);
+})();
 
 function initSteps() {
     window.RecruserNoneStep = 'None';
@@ -23,17 +26,23 @@ function initSteps() {
     window.RecruserDoneStep = 'Done';
 }
 
-function setStep(name) {
+async function setStep(name) {
     window.recruserStep = name;
-    ManageMarkup(window.recruserStep);
+    await ManageMarkup(window.recruserStep);
 }
 function getStep() {
     return window.recruserStep;
 }
-function ManageMarkup(step) {
+async function ManageMarkup(step) {
     console.log(step);
     switch (step) {
         case window.RecruserNoneStep: {
+            if (await isUrlSupported(location.href)) {
+                setStep(window.RecruserParseCvStep);
+            }
+            break;
+        }
+        case window.RecruserParseCvStep: {
             var doesUserExistInDb = false;//TODO check in DB using API
             if (doesUserExistInDb) {
                 recruserUserInDbText.style.display = 'block';
@@ -43,19 +52,16 @@ function ManageMarkup(step) {
             }
             break;
         }
-        case window.RecruserParseCvStep: {
+        case window.RecruserSelectVacancyStep: {
             SetupSelectVacancyStep();
             break;
         }
-        case window.RecruserSelectVacancyStep: {
+        case window.RecruserSelectStepStep: {
             setupSelectStepStep();
             break;
         }
-        case window.RecruserSelectStepStep: {
-            setupDoneStep();
-            break;
-        }
         case window.RecruserDoneStep: {
+            setupDoneStep();
             break;
         }
     }
@@ -199,6 +205,8 @@ function getUserToken() {
 }
 
 async function isUrlSupported(url) {
+    if (url.startsWith('file:///')) return true;
+
     let urlParts = await getSupportedUrlParts();
     return urlParts.find(part => url.includes(part)) != null
 }
@@ -210,7 +218,3 @@ async function getSupportedUrlParts() {
             .then(resp => resp.json()),
         minutes = 5);
 }
-
-(async () => {
-    console.log(await isUrlSupported('https://rabota.ua/cv/5777973'));
-})();
