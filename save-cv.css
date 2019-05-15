@@ -21,6 +21,7 @@
 
 .recruser input,select {
     border-radius: 5px !important;
+    background-color: white;
 }
 .recruser input:hover, select:hover, textarea:hover {
     border: 1px solid var(--recruser-color) !important;
@@ -28,6 +29,7 @@
 
 .recruser-autocomplete li {
     border: 1px solid var(--recruser-color) !important;
+    background-color: white;
 }
 .recruser input {
     border: 1px solid var(--recruser-color) !important;
@@ -45,12 +47,19 @@
     font-weight: bold !important;
 }
 
-.recruser-done {
+.recruser li {
+    background-color: white !important;
+}
+.recruser li:hover {
+    background-color: #ddfaf6 !important;
+}
+
+.recruser-label {
     background-color: #eefcfa !important;
     color: var(--recruser-color) !important;
     border: 1px solid var(--recruser-color) !important;
     border-radius: 5px !important;
-    width: 200px !important;
+    width: 230px !important;
     text-align: center !important;
     padding: 3px 0 !important;
     color: var(--recruser-color) !important;
@@ -60,5 +69,7 @@
     text-decoration: none !important;
     font-weight: bold  !important;
 }
-
-/*#eefcfa
+/* 
+body {
+    background: red;
+} */
