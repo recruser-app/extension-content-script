@@ -8,7 +8,7 @@
     border-radius: 5px;
     width: 100px;
     text-align: center;
-    padding: 6px 0;
+    padding: 5px 0;
     background-color: white;
     cursor: pointer;
     font-size: 13px;
@@ -19,6 +19,9 @@
     text-decoration: none;
 }
 
+.recruser input,select {
+    border-radius: 5px;
+}
 .recruser input:hover, select:hover, textarea:hover {
     border: 1px solid var(--main-color) !important;
 }
@@ -43,15 +46,19 @@
 }
 
 .recruser-done {
+    background-color: #eefcfa !important;
+    color: var(--main-color);
     border: 1px solid var(--main-color);
+    border-radius: 5px;
     width: 200px;
     text-align: center;
-    padding: 5px 0;
-    background-color: white;
-    color: grey !important;
+    padding: 3px 0;
+    color: var(--main-color) !important;
 }
 .recruser-cv-profile {
     color: var(--main-color) !important;
     text-decoration: none;
     font-weight: bold;
 }
+
+/*#eefcfa
