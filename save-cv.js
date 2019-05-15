@@ -20,7 +20,7 @@ initSteps();
 
 function initSteps() {
     window.RecruserNoneStep = 'None';
-    window.RecruserParseCvStep = 'Parse';
+    window.RecruserParseCvIfNotExistInDbStep = 'Parse';
     window.RecruserSelectVacancyStep = 'SelectVacancy';
     window.RecruserSelectStepStep = 'SelectStep';
     window.RecruserDoneStep = 'Done';
@@ -38,18 +38,12 @@ async function ManageMarkup(step) {
     switch (step) {
         case window.RecruserNoneStep: {
             if (await isUrlSupported(location.href)) {
-                setStep(window.RecruserParseCvStep);
+                setStep(window.RecruserParseCvIfNotExistInDbStep);
             }
             break;
         }
-        case window.RecruserParseCvStep: {
-            var doesUserExistInDb = false;//TODO check in DB using API
-            if (doesUserExistInDb) {
-                recruserUserInDbText.style.display = 'block';
-            } else {
-                recruserSaveBtn.style.display = 'block';
-                setupParseCvStep();
-            }
+        case window.RecruserParseCvIfNotExistInDbStep: {
+            setupParseCvStep();
             break;
         }
         case window.RecruserSelectVacancyStep: {
@@ -68,14 +62,21 @@ async function ManageMarkup(step) {
 }
 
 function setupParseCvStep() {
-    recruserSaveBtn.onclick = (e) => {
-        e.preventDefault();
-        window.cv = {};
-        // parseCv().then(cv => {
-        //     window.cv = cv;
-        // });
-        setStep(window.RecruserParseCvStep);
-    };
+    var doesUserExistInDb = false;//TODO check in DB using API
+    if (doesUserExistInDb) {
+        recruserUserInDbText.style.display = 'block';
+    } else {
+        recruserSaveBtn.style.display = 'block';
+
+        recruserSaveBtn.onclick = (e) => {
+            e.preventDefault();
+            window.cv = {};
+            // parseCv().then(cv => {
+            //     window.cv = cv;
+            // });
+            setStep(window.RecruserSelectVacancyStep);
+        };
+    }
 }
 
 function SetupSelectVacancyStep() {
@@ -104,7 +105,7 @@ function SetupSelectVacancyStep() {
                     stepSystemId: vacancies[0].stepSystemId,
                     relation: vacancies[0].recruiterRelation
                 };
-                setStep(window.RecruserSelectVacancyStep);
+                setStep(window.RecruserSelectStepStep);
             }
             else {
                 //show validation message that there are no such vacancy
@@ -141,7 +142,7 @@ function setupSelectStepStep() {
             let targetStep = possibleSteps[0];
             window.recruserSelectedStepId = targetStep.id;
             console.log(targetStep);
-            setStep(window.RecruserSelectStepStep);
+            setStep(window.RecruserDoneStep);
         }
         else {
             //show validation message that there are no such vacancy
