@@ -1,6 +1,7 @@
 let recruserSaveBlock = document.getElementById('saveCv-step');
 let recruserSaveBtn = document.getElementById('recruser-save-btn');
 let recruserUserInDbText = document.getElementById('recruser-user-in-db');
+let recruserAddCvToAnotherVacancyBtn = document.getElementById('recruser-select-another-vacancy-btn');
 
 let recruserSelectVacancyBlock = document.getElementById('recruser-selectVacancy-step');
 let recruserSelectVacancyAutocomplete = document.getElementById('recruser-selectVacancy-autocomplete');
@@ -62,18 +63,27 @@ async function ManageMarkup(step) {
 }
 
 function setupParseCvStep() {
-    var doesUserExistInDb = false;//TODO check in DB using API
-    if (doesUserExistInDb) {
+    var foundCvId = null;//'foundCvId';//TODO check in DB using API
+    recruserSaveBlock.style.display = 'block';
+    if (foundCvId) {
         recruserUserInDbText.style.display = 'block';
-    } else {
-        recruserSaveBtn.style.display = 'block';
-
-        recruserSaveBtn.onclick = (e) => {
+        recruserAddCvToAnotherVacancyBtn.onclick = (e) => {
             e.preventDefault();
-            window.cv = {};
+            window.cvId = foundCvId;
             // parseCv().then(cv => {
             //     window.cv = cv;
             // });
+            setStep(window.RecruserSelectVacancyStep);
+        };
+    } else {
+        recruserSaveBtn.style.display = 'block';
+        recruserSaveBtn.onclick = (e) => {
+            e.preventDefault();
+            Promise.resolve(() => {
+                //parse CV
+                window.cvId = 'savedCvId';
+
+            });
             setStep(window.RecruserSelectVacancyStep);
         };
     }
@@ -208,6 +218,7 @@ function getUserToken() {
 
 async function isUrlSupported(url) {
     if (url.startsWith('file:///')) return true;
+    if(url.startsWith('https://extension-components.recruser.com')) return true;
 
     let urlParts = await getSupportedUrlParts();
     return urlParts.find(part => url.includes(part)) != null

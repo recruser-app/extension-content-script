@@ -63,8 +63,9 @@
     text-align: center !important;
     padding: 3px 0 !important;
     color: var(--recruser-color) !important;
+    margin-bottom: 5px;
 }
-.recruser-cv-profile {
+.recruser-link {
     color: var(--recruser-color) !important;
     text-decoration: none !important;
     font-weight: bold  !important;
