@@ -1,64 +1,64 @@
 :root {
-    --main-color: #0ca789;
+    --recruser-color: #0ca789 !important;
 }
 
 .recruser-theme-btn {
-    color: grey;
-    border: 1px solid var(--main-color) !important;
-    border-radius: 5px;
-    width: 100px;
-    text-align: center;
-    padding: 5px 0;
-    background-color: white;
-    cursor: pointer;
-    font-size: 13px;
+    color: grey !important;
+    border: 1px solid var(--recruser-color) !important;
+    border-radius: 5px !important;
+    width: 100px !important;
+    text-align: center !important;
+    padding: 5px 0 !important;
+    background-color: white !important;
+    cursor: pointer !important;
+    font-size: 13px !important;
 }
 .recruser-theme-btn:hover {
-    color: white;
-    background-color: var(--main-color) !important;
-    text-decoration: none;
+    color: white !important;
+    background-color: var(--recruser-color) !important;
+    text-decoration: none !important;
 }
 
 .recruser input,select {
-    border-radius: 5px;
+    border-radius: 5px !important;
 }
 .recruser input:hover, select:hover, textarea:hover {
-    border: 1px solid var(--main-color) !important;
+    border: 1px solid var(--recruser-color) !important;
 }
 
 .recruser-autocomplete li {
-    border: 1px solid var(--main-color);
+    border: 1px solid var(--recruser-color) !important;
 }
 .recruser input {
-    border: 1px solid var(--main-color);
-    padding: 5px;
-    width: 200px
+    border: 1px solid var(--recruser-color) !important;
+    padding: 5px !important;
+    width: 200px !important;
 }
 .recruser-autocomplete input:focus {
-    outline: none;
+    outline: none !important;
 }
 
 .recruser-next-step {
-    text-decoration: none;
-    color: var(--main-color);
-    margin: 0 5px;
-    font-weight: bold;
+    text-decoration: none !important;
+    color: var(--recruser-color) !important;
+    margin: 0 5px !important;
+    font-weight: bold !important;
 }
 
 .recruser-done {
     background-color: #eefcfa !important;
-    color: var(--main-color);
-    border: 1px solid var(--main-color);
-    border-radius: 5px;
-    width: 200px;
-    text-align: center;
-    padding: 3px 0;
-    color: var(--main-color) !important;
+    color: var(--recruser-color) !important;
+    border: 1px solid var(--recruser-color) !important;
+    border-radius: 5px !important;
+    width: 200px !important;
+    text-align: center !important;
+    padding: 3px 0 !important;
+    color: var(--recruser-color) !important;
 }
 .recruser-cv-profile {
-    color: var(--main-color) !important;
-    text-decoration: none;
-    font-weight: bold;
+    color: var(--recruser-color) !important;
+    text-decoration: none !important;
+    font-weight: bold  !important;
 }
 
 /*#eefcfa
