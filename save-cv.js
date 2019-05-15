@@ -68,7 +68,8 @@ async function ManageMarkup(step) {
 }
 
 function setupParseCvStep() {
-    recruserSaveBtn.onclick = () => {
+    recruserSaveBtn.onclick = (e) => {
+        e.preventDefault();
         window.cv = {};
         // parseCv().then(cv => {
         //     window.cv = cv;
