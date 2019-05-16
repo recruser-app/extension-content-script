@@ -278,6 +278,22 @@ async function doesCvAlreadyAttachedToVacancy(cvId, vacancyId) {
     }).then(resp => resp.json());
 }
 
+async function isUrlSupported(url) {
+    if (isTestingEnvironment()) return true;
+
+    let urlParts = await getSupportedUrlParts();
+    return urlParts.find(part => url.includes(part)) != null
+}
+
+async function getSupportedUrlParts() {
+    return await getOrCreateFromCacheAsync(
+        key = 'recruserSupportedUrlParts',
+        callback = async () => await fetch(`${getApiHost()}/parser/supported-urls`)
+            .then(resp => resp.json()),
+        minutes = 5);
+}
+
+//// SHARED
 
 function getApiHost() {
     return 'http://localhost:57492';
@@ -308,21 +324,33 @@ async function setUserIfTestingEnvironment() {
     }
 }
 
-async function isUrlSupported(url) {
-    if (isTestingEnvironment()) return true;
-
-    let urlParts = await getSupportedUrlParts();
-    return urlParts.find(part => url.includes(part)) != null
-}
-
 function isTestingEnvironment() {
     return location.href.startsWith('file:///') || location.href.startsWith('https://extension-components');
 }
+async function getOrCreateFromCacheAsync(key, callback, minutes) {
+    let storageObj = JSON.parse(localStorage.getItem(key));
+    if (storageObj && Date.now() - storageObj.timestampInMs > minutes * 1000) {
+        storageObj = null;
+    }
 
-async function getSupportedUrlParts() {
-    return await getOrCreateFromCacheAsync(
-        key = 'recruserSupportedUrlParts',
-        callback = async () => await fetch(`${getApiHost()}/parser/supported-urls`)
-            .then(resp => resp.json()),
-        minutes = 5);
+    if (storageObj) {
+        return Promise.resolve(storageObj.data);
+    }
+
+    data = await callback();
+    localStorage.setItem(key, JSON.stringify({
+        data: data,
+        timestampInMs: Date.now()
+    }));
+    return data;
+}
+function getFromLocalStorage(key) {
+    let dataStr = localStorage.getItem(key);
+    if (dataStr == 'null' || dataStr == 'undefined' || !dataStr)
+        return null;
+    console.log(key, dataStr);
+    return JSON.parse(dataStr);
+}
+function setToLocalStorage(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
 }
