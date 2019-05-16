@@ -286,10 +286,10 @@ function getApiHost() {
 async function getHeaders() {
     return new Headers({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${await getUserToken()}`
+        'Authorization': `Bearer ${getUserToken()}`
     });
 }
-async function getUserToken() {
+function getUserToken() {
     let user = getFromLocalStorage('recruserUser');
     if (!user) return '';
     return user.token;
