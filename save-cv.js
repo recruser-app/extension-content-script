@@ -105,7 +105,7 @@ async function SetupSelectVacancyStep() {
     recruserSaveBlock.style.display = 'none';
     recruserSelectVacancyBlock.style.display = 'block';
 
-    window.recruserLastVacancy = await getFromLocalStorage('recruserLastVacancy');
+    window.recruserLastVacancy = getFromLocalStorage('recruserLastVacancy');
     if (window.recruserLastVacancy) {
         recruserSelectVacancyAutocomplete.value = window.recruserLastVacancy.title;
     }
@@ -126,7 +126,7 @@ async function SetupSelectVacancyStep() {
         e.preventDefault();
         let input = recruserSelectVacancyAutocomplete.value;
         if (!input.length) { // skip vacancy select
-            await setToLocalStorage('recruserLastVacancy', null);
+            setToLocalStorage('recruserLastVacancy', null);
             window.recruserCandidateId = await saveCandidate(window.recruserCvId, null);
             setStep(window.RecruserDoneStep);
             return;
@@ -141,7 +141,7 @@ async function SetupSelectVacancyStep() {
                 selectVacancyValidationEl.innerText = 'Already attached to this vacancy';
             } else {
                 setStep(window.RecruserSelectStepStep);
-                await setToLocalStorage('recruserLastVacancy', targetVacancy);
+                setToLocalStorage('recruserLastVacancy', targetVacancy);
                 window.recruserLastVacancy = targetVacancy;
                 window.recruserCandidateId = await saveCandidate(window.recruserCvId, window.recruserLastVacancy.id);
             }
@@ -290,14 +290,14 @@ async function getHeaders() {
     });
 }
 async function getUserToken() {
-    let user = await getFromLocalStorage('recruserUser');
+    let user = getFromLocalStorage('recruserUser');
     if (!user) return '';
     return user.token;
 }
 
 async function setUserIfTestingEnvironment() {
     if (isTestingEnvironment()) {
-        await setToLocalStorage('recruserUser', {
+        setToLocalStorage('recruserUser', {
             email: "rec1@gmail.com",
             expireInMs: 1558556419249.2485,
             id: "0eb595e6-26e8-4902-bf69-65866478b516",

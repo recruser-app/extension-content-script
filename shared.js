@@ -16,21 +16,11 @@ async function getOrCreateFromCacheAsync(key, callback, minutes) {
     return data;
 }
 
-async function getFromLocalStorage(key) {
-    if (isTestingEnvironment()) {
-        return await Promise.resolve(JSON.parse(localStorage.getItem(key)));
-    } else {
-        return await new Promise(resolve => chrome.storage.local.get(key, resolve));
-    }
+function getFromLocalStorage(key) {
+    return JSON.parse(localStorage.getItem(key));
 }
-async function setToLocalStorage(key, data) {
-    if (isTestingEnvironment()) {
-        Promise.resolve(localStorage.setItem(key, JSON.stringify(data)));
-    } else {
-        return new Promise(resolve => {
-            chrome.storage.local.set(data, resolve);
-        });
-    }
+function setToLocalStorage(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
 }
 
 function isTestingEnvironment() {
