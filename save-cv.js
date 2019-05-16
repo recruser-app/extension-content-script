@@ -315,6 +315,10 @@ async function isUrlSupported(url) {
     return urlParts.find(part => url.includes(part)) != null
 }
 
+function isTestingEnvironment() {
+    return location.href.startsWith('file:///') || location.href.startsWith('https://extension-components');
+}
+
 async function getSupportedUrlParts() {
     return await getOrCreateFromCacheAsync(
         key = 'recruserSupportedUrlParts',

@@ -26,7 +26,3 @@ function getFromLocalStorage(key) {
 function setToLocalStorage(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
 }
-
-function isTestingEnvironment() {
-    return location.href.startsWith('file:///') || location.href.startsWith('https://extension-components');
-}
