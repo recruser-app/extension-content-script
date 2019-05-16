@@ -125,7 +125,6 @@ async function SetupSelectVacancyStep() {
     recruserSelectVacancyNextStep.onclick = async (e) => {
         e.preventDefault();
         let input = recruserSelectVacancyAutocomplete.value;
-        console.log('selectVacancyInput', input)
         if (!input.length) { // skip vacancy select
             window.recruserCandidateId = await saveCandidate(window.recruserCvId, null);
             setStep(window.RecruserDoneStep);
@@ -140,9 +139,6 @@ async function SetupSelectVacancyStep() {
                 selectVacancyValidationEl.style.display = 'block';
                 selectVacancyValidationEl.innerText = 'CV already there';
             } else {
-                console.log('targetVacancy', targetVacancy);
-                console.log('window.recruserLastVacancy', window.recruserLastVacancy);
-
                 setStep(window.RecruserSelectStepStep);
                 setToLocalStorage('recruserLastVacancy', targetVacancy);
                 window.recruserLastVacancy = targetVacancy;
@@ -157,7 +153,6 @@ async function SetupSelectVacancyStep() {
 }
 
 async function setupSelectStepStep() {
-    console.log(window.recruserLastVacancy)
     if (!window.recruserLastVacancy.stepSystemId) {
         setStep(window.RecruserSelectStepStep);
     }
@@ -312,8 +307,7 @@ function getHeaders() {
 function getUserToken() {
     let data = getFromLocalStorage('recruserUser');
     if (!data) return '';
-    console.log('getUserToken', data.recruserUser);
-    return data.recruserUser.token;
+    return data.token;
 }
 
 async function setUserIfTestingEnvironment() {
@@ -353,7 +347,6 @@ function getFromLocalStorage(key) {
     let dataStr = localStorage.getItem(key);
     if (dataStr == 'null' || dataStr == 'undefined' || !dataStr)
         return null;
-    console.log(key, dataStr);
     return JSON.parse(dataStr);
 }
 function setToLocalStorage(key, data) {
