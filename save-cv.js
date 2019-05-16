@@ -140,6 +140,9 @@ async function SetupSelectVacancyStep() {
                 selectVacancyValidationEl.style.display = 'block';
                 selectVacancyValidationEl.innerText = 'Already attached to this vacancy';
             } else {
+                console.log('targetVacancy', targetVacancy);
+                console.log('window.recruserLastVacancy', window.recruserLastVacancy);
+
                 setStep(window.RecruserSelectStepStep);
                 setToLocalStorage('recruserLastVacancy', targetVacancy);
                 window.recruserLastVacancy = targetVacancy;
@@ -154,6 +157,7 @@ async function SetupSelectVacancyStep() {
 }
 
 async function setupSelectStepStep() {
+    console.log(window.recruserLastVacancy)
     if (!window.recruserLastVacancy.stepSystemId) {
         setStep(window.RecruserSelectStepStep);
     }
@@ -308,6 +312,7 @@ function getHeaders() {
 function getUserToken() {
     let data = getFromLocalStorage('recruserUser');
     if (!data) return '';
+    console.log('getUserToken', data.recruserUser);
     return data.recruserUser.token;
 }
 
