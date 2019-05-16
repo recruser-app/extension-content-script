@@ -13,8 +13,15 @@
     <link rel="stylesheet" href="save-cv.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.4/awesomplete.min.css" />
     <div id="recruser-save-cv-block">
+
         <div id="saveCv-step">
             <button style="display:none" id="recruser-save-btn" class="recruser-theme-btn">Save CV</button>
+            <div style="display:none" id="recruser-multiple-users-in-db">
+                <div class="recruser recruser-label">
+                    <span>Multiple profiles found. </span>
+                    <a class="recruser-link" id="recruser-profile-link" href="#">Check them</a>
+                </div>
+            </div>
             <div style="display:none" id="recruser-user-in-db">
                 <div class="recruser recruser-label">
                     <span>Already saved. </span>
@@ -26,19 +33,27 @@
                 </div>
             </div>
         </div>
+
         <div style="display:none" class="recruser recruser-autocomplete" id="recruser-selectVacancy-step">
-            <input placeholder="Select vacancy" id="recruser-selectVacancy-autocomplete" />
-            <a id="recruser-selectVacancy-next-step" class="recruser-next-step" href="#"> >></a>
+            <input placeholder="Type vacancy or leave empty" id="recruser-selectVacancy-autocomplete" />
+            <a id="recruser-selectVacancy-next-step" title="Next step" class="recruser-next-step" href="#"></a>
+            <div style="display:none" id="recruser-selectVacancy-validation" class="recruser recruser-validation"></div>
         </div>
+
         <div style="display:none" class="recruser recruser-autocomplete" id="recruser-selectStep-step">
-            <input placeholder="Select step" id="recruser-selectStep-autocomplete" />
-            <a id="recruser-selectStep-next-step" class="recruser-next-step" href="#"> >></a>
+            <input placeholder="Type step or leave empty" id="recruser-selectStep-autocomplete" />
+            <a id="recruser-selectStep-next-step" title="Next step" class="recruser-next-step" href="#"></a>
+            <!-- <a id="recruser-finish" title="Finish" class="recruser-finish" href="#"></a> -->
+            <br>
+            <input placeholder="Leave comment" id="recruser-step-comment">
+            <div style="display:none" id="recruser-selectStep-validation" class="recruser recruser-validation"></div>
         </div>
 
         <div style="display:none" class="recruser recruser-label" id="recruser-done-step">
-            <span>Cv saved. </span>
+            <span>Saved. </span>
             <a class="recruser-link" id="recruser-profile-link" href="#">Go to profile</a>
         </div>
+
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.4/awesomplete.min.js" defer></script>
     <script src="shared.js" defer></script>
