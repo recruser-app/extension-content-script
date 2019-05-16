@@ -18,9 +18,10 @@ async function getOrCreateFromCacheAsync(key, callback, minutes) {
 
 function getFromLocalStorage(key) {
     let dataStr = localStorage.getItem(key);
-    if(dataStr == 'null' || dataStr == 'undefined' || !dataStr)
+    if (dataStr == 'null' || dataStr == 'undefined' || !dataStr)
         return null;
-    return JSON.parse(localStorage.getItem(key));
+    console.log(key, dataStr);
+    return JSON.parse(dataStr);
 }
 function setToLocalStorage(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
