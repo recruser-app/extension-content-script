@@ -125,8 +125,8 @@ async function SetupSelectVacancyStep() {
     recruserSelectVacancyNextStep.onclick = async (e) => {
         e.preventDefault();
         let input = recruserSelectVacancyAutocomplete.value;
+        console.log('selectVacancyInput', input)
         if (!input.length) { // skip vacancy select
-            setToLocalStorage('recruserLastVacancy', null);
             window.recruserCandidateId = await saveCandidate(window.recruserCvId, null);
             setStep(window.RecruserDoneStep);
             return;
