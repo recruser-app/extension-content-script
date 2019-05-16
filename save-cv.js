@@ -138,7 +138,7 @@ async function SetupSelectVacancyStep() {
 
             if (await doesCvAlreadyAttachedToVacancy(window.recruserCvId, targetVacancy.id)) {
                 selectVacancyValidationEl.style.display = 'block';
-                selectVacancyValidationEl.innerText = 'Already attached to this vacancy';
+                selectVacancyValidationEl.innerText = 'CV already there';
             } else {
                 console.log('targetVacancy', targetVacancy);
                 console.log('window.recruserLastVacancy', window.recruserLastVacancy);
