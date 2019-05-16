@@ -209,7 +209,7 @@ function setupDoneStep() {
 async function getPossibleCvIdsByFullNameOrSoruceUrlInDb() {
     return await fetch(`${getApiHost()}/parser/cv/existence-check`, {
         method: 'POST',
-        headers: await getHeaders(),
+        headers: getHeaders(),
         body: JSON.stringify({
             url: location.href,
             html: document.body.innerHTML
@@ -220,7 +220,7 @@ async function getPossibleCvIdsByFullNameOrSoruceUrlInDb() {
 async function parseAndSaveCv() {
     return await fetch(`${getApiHost()}/cv/from-page`, {
         method: 'POST',
-        headers: await getHeaders(),
+        headers: getHeaders(),
         body: JSON.stringify({
             url: location.href,
             html: document.body.innerHTML
@@ -231,7 +231,7 @@ async function parseAndSaveCv() {
 async function saveCandidate(cvId, vacancyId) {
     return await fetch(`${getApiHost()}/candidates`, {
         method: 'POST',
-        headers: await getHeaders(),
+        headers: getHeaders(),
         body: JSON.stringify({
             cvId: cvId,
             vacancyId: vacancyId
@@ -242,7 +242,7 @@ async function saveCandidate(cvId, vacancyId) {
 async function saveCandidateStep(candidateId, stepId, comment) {
     return await fetch(`${getApiHost()}/candidates/${candidateId}/step-transactions`, {
         method: 'POST',
-        headers: await getHeaders(),
+        headers: getHeaders(),
         body: JSON.stringify({
             newStepId: stepId,
             comment: comment
@@ -253,28 +253,28 @@ async function saveCandidateStep(candidateId, stepId, comment) {
 async function fetchVacancies(text) {
     return fetch(`${getApiHost()}/vacancies?count=5&vacancyTitle=${text}`, {
         method: 'GET',
-        headers: await getHeaders()
+        headers: getHeaders()
     }).then(resp => resp.json());
 }
 
 async function fetchSteps(stepSystemId, relation) {
     return fetch(`${getApiHost()}/step-systems/${stepSystemId}?relation=${relation}`, {
         method: 'GET',
-        headers: await getHeaders()
+        headers: getHeaders()
     }).then(resp => resp.json());
 }
 
 async function fetchVacancyById(id) {
     return fetch(`${getApiHost()}/vacancies/${id}`, {
         method: 'GET',
-        headers: await getHeaders()
+        headers: getHeaders()
     }).then(resp => resp.json());
 }
 
 async function doesCvAlreadyAttachedToVacancy(cvId, vacancyId) {
     return fetch(`${getApiHost()}/cvs/${cvId}/vacancy/${vacancyId}`, {
         method: 'GET',
-        headers: await getHeaders()
+        headers: getHeaders()
     }).then(resp => resp.json());
 }
 
