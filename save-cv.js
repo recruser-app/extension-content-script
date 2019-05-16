@@ -18,15 +18,13 @@ let recruserDoneBlock = document.getElementById('recruser-done-step');
 
 let recruserProfileLink = document.getElementById('recruser-profile-link');
 
-initSteps();
-
 (async () => {
-    await setUserIfTestingEnvironment();
-    await setStep(window.RecruserNoneStep);
+    initSteps();
+    setUserIfTestingEnvironment();
+    await setStep(window.RecruserParseCvIfNotExistInDbStep);
 })();
 
 function initSteps() {
-    window.RecruserNoneStep = 'None';
     window.RecruserParseCvIfNotExistInDbStep = 'Parse';
     window.RecruserSelectVacancyStep = 'SelectVacancy';
     window.RecruserSelectStepStep = 'SelectStep';
@@ -37,18 +35,10 @@ async function setStep(name) {
     window.recruserStep = name;
     await ManageMarkup(window.recruserStep);
 }
-function getStep() {
-    return window.recruserStep;
-}
+
 async function ManageMarkup(step) {
     console.log(step);
     switch (step) {
-        case window.RecruserNoneStep: {
-            if (await isUrlSupported(location.href)) {
-                setStep(window.RecruserParseCvIfNotExistInDbStep);
-            }
-            break;
-        }
         case window.RecruserParseCvIfNotExistInDbStep: {
             await setupParseCvStep();
             break;
@@ -94,7 +84,6 @@ async function setupParseCvStep() {
         recruserProfileLink.setAttribute('target', '_blank');
     }
 }
-
 async function parseCvAndSetCvId() {
     window.recruserCvIsParsing = true;
     window.recruserCvId = await parseAndSaveCv();
@@ -205,6 +194,8 @@ function setupDoneStep() {
     recruserDoneBlock.style.display = 'block';
 }
 
+/// HTTP CALLS
+
 async function getPossibleCvIdsByFullNameOrSoruceUrlInDb() {
     return await fetch(`${getApiHost()}/parser/cv/existence-check`, {
         method: 'POST',
@@ -277,25 +268,19 @@ async function doesCvAlreadyAttachedToVacancy(cvId, vacancyId) {
     }).then(resp => resp.json());
 }
 
-async function isUrlSupported(url) {
-    if (isTestingEnvironment()) return true;
-
-    let urlParts = await getSupportedUrlParts();
-    return urlParts.find(part => url.includes(part)) != null
-}
-
-async function getSupportedUrlParts() {
-    return await getOrCreateFromCacheAsync(
-        key = 'recruserSupportedUrlParts',
-        callback = async () => await fetch(`${getApiHost()}/parser/supported-urls`)
-            .then(resp => resp.json()),
-        minutes = 5);
-}
-
 //// SHARED
 
-function getApiHost() {
-    return 'http://localhost:57492';
+function setUserIfTestingEnvironment() {
+    if (isTestingEnvironment()) {
+        setToLocalStorage('recruserUser', {
+            email: "rec1@gmail.com",
+            expireInMs: 1558556419249.2485,
+            id: "0eb595e6-26e8-4902-bf69-65866478b516",
+            name: "rec1@gmail.com",
+            role: 0,
+            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMT0NBTCBBVVRIT1JJVFkiOiJBdXRoU2VydmVyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJlYzFAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUmVjcnVpdGVyIiwibmJmIjoxNTU3OTUxNjE5LCJleHAiOjE1NTg1NTY0MTksImlzcyI6IkF1dGhTZXJ2ZXIiLCJhdWQiOiJBYXJzZXJBcGkifQ.Gy5BWheLHp4F-98NyDN9G4YDADQAT8HzjzR6O62-wpk"
+        });
+    }
 }
 
 function getHeaders() {
@@ -310,39 +295,14 @@ function getUserToken() {
     return data.token;
 }
 
-async function setUserIfTestingEnvironment() {
-    if (isTestingEnvironment()) {
-        setToLocalStorage('recruserUser', {
-            email: "rec1@gmail.com",
-            expireInMs: 1558556419249.2485,
-            id: "0eb595e6-26e8-4902-bf69-65866478b516",
-            name: "rec1@gmail.com",
-            role: 0,
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMT0NBTCBBVVRIT1JJVFkiOiJBdXRoU2VydmVyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJlYzFAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUmVjcnVpdGVyIiwibmJmIjoxNTU3OTUxNjE5LCJleHAiOjE1NTg1NTY0MTksImlzcyI6IkF1dGhTZXJ2ZXIiLCJhdWQiOiJBYXJzZXJBcGkifQ.Gy5BWheLHp4F-98NyDN9G4YDADQAT8HzjzR6O62-wpk"
-        });
-    }
+function getApiHost() {
+    return 'http://localhost:57492';
 }
 
 function isTestingEnvironment() {
     return location.href.startsWith('file:///') || location.href.startsWith('https://extension-components');
 }
-async function getOrCreateFromCacheAsync(key, callback, minutes) {
-    let storageObj = JSON.parse(localStorage.getItem(key));
-    if (storageObj && Date.now() - storageObj.timestampInMs > minutes * 1000) {
-        storageObj = null;
-    }
 
-    if (storageObj) {
-        return Promise.resolve(storageObj.data);
-    }
-
-    data = await callback();
-    localStorage.setItem(key, JSON.stringify({
-        data: data,
-        timestampInMs: Date.now()
-    }));
-    return data;
-}
 function getFromLocalStorage(key) {
     let dataStr = localStorage.getItem(key);
     if (dataStr == 'null' || dataStr == 'undefined' || !dataStr)
