@@ -299,16 +299,16 @@ function getApiHost() {
     return 'http://localhost:57492';
 }
 
-async function getHeaders() {
+function getHeaders() {
     return new Headers({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getUserToken()}`
     });
 }
 function getUserToken() {
-    let user = getFromLocalStorage('recruserUser');
-    if (!user) return '';
-    return user.token;
+    let data = getFromLocalStorage('recruserUser');
+    if (!data) return '';
+    return data.recruserUser.token;
 }
 
 async function setUserIfTestingEnvironment() {
