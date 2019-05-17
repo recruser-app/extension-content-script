@@ -94,7 +94,7 @@ async function SetupSelectVacancyStep() {
     recruserSaveBlock.style.display = 'none';
     recruserSelectVacancyBlock.style.display = 'block';
 
-    window.recruserLastVacancy = getFromLocalStorage('recruserLastVacancy');
+    window.recruserLastVacancy = await getLastSelectedVacancy();
     if (window.recruserLastVacancy) {
         recruserSelectVacancyAutocomplete.value = window.recruserLastVacancy.title;
     }
@@ -120,17 +120,15 @@ async function SetupSelectVacancyStep() {
             return;
         }
 
-        let vacancies = await fetchVacancies(input);
-        if (vacancies.length == 1 && vacancies[0].title == input && vacancies[0].stepSystemId) {
-            let targetVacancy = await fetchVacancyById(vacancies[0].id);
-
-            if (await doesCvAlreadyAttachedToVacancy(window.recruserCvId, targetVacancy.id)) {
+        let matchedVacancy = await getMatchedVacancyFor(input);
+        if (matchedVacancy) {
+            if (await doesCvAlreadyAttachedToVacancy(window.recruserCvId, matchedVacancy.id)) {
                 selectVacancyValidationEl.style.display = 'block';
                 selectVacancyValidationEl.innerText = 'CV already there';
             } else {
+                window.recruserLastVacancy = matchedVacancy;
                 setStep(window.RecruserSelectStepStep);
-                setToLocalStorage('recruserLastVacancy', targetVacancy);
-                window.recruserLastVacancy = targetVacancy;
+                setLastSelectedVacancy(matchedVacancy.id);
                 window.recruserCandidateId = await saveCandidate(window.recruserCvId, window.recruserLastVacancy.id);
             }
         }
@@ -141,9 +139,17 @@ async function SetupSelectVacancyStep() {
     };
 }
 
+async function getMatchedVacancyFor(input) {
+    let vacancies = await fetchVacancies(input);
+    if (vacancies.length == 1 && vacancies[0].title == input) {
+        return vacancies[0];
+    }
+    return null;
+}
+
 async function setupSelectStepStep() {
     if (!window.recruserLastVacancy.stepSystemId) {
-        setStep(window.RecruserSelectStepStep);
+        setStep(window.RecruserDoneStep);
     }
 
     recruserSelectVacancyBlock.style.display = 'none';
@@ -154,10 +160,14 @@ async function setupSelectStepStep() {
         maxItems: 15,
         sort: (a, b) => a.order > b.order
     });
-    fetchSteps(window.recruserLastVacancy.stepSystemId, window.recruserLastVacancy.recruiterRelation).then(stepsystem => {
-        window.recruserStepSystem = stepsystem;
-        autocomplete.list = stepsystem.steps.filter(s => s.canUse == true).map(s => s.title);
-    });
+    
+    window.recruserStepSystem = await fetchSteps(window.recruserLastVacancy.stepSystemId, window.recruserLastVacancy.recruiterRelation);
+    let stepTitles = window.recruserStepSystem.steps
+        .filter(s => s.canUse == true)
+        .sort((a, b) => a.order > b.order)
+        .map(s => s.title);
+    autocomplete.list = stepTitles;
+    recruserSelectStepAutocomplete.value = stepTitles[0];
 
     recruserSelectStepNextStep.oninput = () => {
         selectStepValidationEl.style.display = 'none';
@@ -165,7 +175,7 @@ async function setupSelectStepStep() {
     recruserSelectStepNextStep.onclick = async (e) => {
         e.preventDefault();
         let input = recruserSelectStepAutocomplete.value;
-        if (!input.length) { // skip step select
+        if (!input.length) { // skip step 
             setStep(window.RecruserDoneStep);
             //TODO: save to google sheet if spreadSheetUrl present
             return;
@@ -173,8 +183,7 @@ async function setupSelectStepStep() {
 
         let possibleSteps = window.recruserStepSystem.steps.filter(s => s.title == input);
         if (possibleSteps.length == 1) {
-            let targetStep = possibleSteps[0];
-            window.recruserSelectedStepId = targetStep.id;
+            window.recruserSelectedStepId = possibleSteps[0].id;
 
             setStep(window.RecruserDoneStep);
             let comment = document.getElementById('recruser-step-comment').value;
@@ -241,7 +250,7 @@ async function saveCandidateStep(candidateId, stepId, comment) {
 }
 
 async function fetchVacancies(text) {
-    return fetch(`${getApiHost()}/vacancies?count=5&vacancyTitle=${text}`, {
+    return fetch(`${getApiHost()}/vacancies?count=5&vacancyTitle=${encodeURIComponent(text)}`, {
         method: 'GET',
         headers: getHeaders()
     }).then(resp => resp.json());
@@ -254,19 +263,27 @@ async function fetchSteps(stepSystemId, relation) {
     }).then(resp => resp.json());
 }
 
-async function fetchVacancyById(id) {
-    return fetch(`${getApiHost()}/vacancies/${id}`, {
-        method: 'GET',
-        headers: getHeaders()
-    }).then(resp => resp.json());
-}
-
 async function doesCvAlreadyAttachedToVacancy(cvId, vacancyId) {
     return fetch(`${getApiHost()}/cvs/${cvId}/vacancy/${vacancyId}`, {
         method: 'GET',
         headers: getHeaders()
     }).then(resp => resp.json());
 }
+
+async function getLastSelectedVacancy() {
+    let vacInfo = await fetch(`${getApiHost()}/settings/recruiter/last-selected-vacancy`, {
+        method: 'GET',
+        headers: getHeaders()
+    }).then(resp => resp.json());
+    return vacInfo.id ? vacInfo : null;
+}
+async function setLastSelectedVacancy(vacancyId) {
+    return fetch(`${getApiHost()}/settings/recruiter/last-selected-vacancy?vacancyId=${vacancyId}`, {
+        method: 'PUT',
+        headers: getHeaders()
+    }).then(resp => resp.json());
+}
+
 
 //// SHARED
 
