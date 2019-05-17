@@ -278,10 +278,10 @@ async function getLastSelectedVacancy() {
     return vacInfo.id ? vacInfo : null;
 }
 async function setLastSelectedVacancy(vacancyId) {
-    return fetch(`${getApiHost()}/settings/recruiter/last-selected-vacancy?vacancyId=${vacancyId}`, {
+    fetch(`${getApiHost()}/settings/recruiter/last-selected-vacancy?vacancyId=${vacancyId}`, {
         method: 'PUT',
         headers: getHeaders()
-    }).then(resp => resp.json());
+    });
 }
 
 
