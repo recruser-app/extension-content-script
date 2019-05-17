@@ -156,7 +156,7 @@ async function setupSelectStepStep() {
     recruserSelectStepBlock.style.display = 'block';
 
     let autocomplete = new Awesomplete(recruserSelectStepAutocomplete, {
-        minChars: 0,
+        minChars: 1,
         maxItems: 15,
         sort: (a, b) => a.order > b.order
     });
