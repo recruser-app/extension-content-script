@@ -43,12 +43,11 @@ async function saveCandidateStep(candidateId, stepId, comment) {
     }).then(resp => resp.json());
 }
 
-async function getMatchedVacancyFor(input, includeDescription = false) {
-    let vacancies = await fetchVacancies(input, 2, includeDescription);
-    if (vacancies.length == 1 && vacancies[0].title == input) {
-        return vacancies[0];
-    }
-    return null;
+async function getMatchedVacancyFor(text) {
+    return await fetch(`${getApiHost()}/vacancies/name/${encodeURIComponent(text)}`, {
+        method: 'GET',
+        headers: getHeaders()
+    }).then(resp => resp.status == 200 ? resp.json() : null);
 }
 async function fetchVacancies(text, count, includeDescription = false) {
     let url = `${getApiHost()}/vacancies?`;

@@ -34,7 +34,7 @@
 
 
 .recruser-block-vacancy-title {
-    display: inline-block;
+    /* display: inline-block; */
     font-weight: bold;
     font-size: 20px;
     margin: 6px 0;
@@ -83,6 +83,7 @@
     display:inline-block;
     text-decoration:none;
     width: 25px;
+    text-align: center;
     background-color: #ddfaf6;
 }
 .recruser-edit:before{
@@ -92,13 +93,14 @@
     position: absolute;
     width: var(--recruser-icon-size);
     height: var(--recruser-icon-size);
-    margin: -20px 5px 0 10px;
+    margin: -10px 5px 0 5px;
 }
 
 .recruser-hide{
     display:inline-block;
     text-decoration:none;
     width: 25px;
+    text-align: center;
     background-color: #ddfaf6;
 }
 .recruser-hide:before{
@@ -108,7 +110,7 @@
     position: absolute;
     width: var(--recruser-icon-size);
     height: var(--recruser-icon-size);
-    margin: 5px 5px 0 -10px;
+    margin: -10px 5px 0 5px;
 }
 
 .recruser-show{

@@ -26,10 +26,17 @@
         <div style="display:none" id="recruser-vacancy-opened"
             class="recruser-vacancy-block recruser-vacancy-block-opened">
             <div id="recruser-set-block-vacancy-view">
-                <div id="recruser-block-vacancy-title" class="recruser-block-vacancy-title"></div>
-                <a id="recruser-set-block-vacancy-edit-btn" title="Change vacancy" class="recruser-edit" href="#"></a>
-                <a style="float: right" id="recruser-set-block-vacancy-hide-btn" title="Hide vacancy"
-                    class="recruser-hide" href="#"></a>
+                <div style="display: grid; grid-template-columns: 7fr 1fr 1fr">
+                    <div id="recruser-block-vacancy-title" class="recruser-block-vacancy-title"></div>
+                    <div>
+                        <a id="recruser-set-block-vacancy-edit-btn" title="Change vacancy" class="recruser-edit"
+                            href="#"></a>
+                    </div>
+                    <div>
+                        <a id="recruser-set-block-vacancy-hide-btn" title="Hide vacancy" class="recruser-hide"
+                            href="#"></a>
+                    </div>
+                </div>
             </div>
             <div style="display:none" id="recruser-set-block-vacancy-edit" class="recruser recruser-autocomplete">
                 <input placeholder="Type vacancy name" id="recruser-set-block-vacancy-autocomplete" />
@@ -44,7 +51,7 @@
             <div id="recruser-block-vacancy-description" class="recruser-block-vacancy-description"></div>
         </div>
     </div>
-    
+
     <script src="recruser-vacancy-block.js"></script>
 </body>
 

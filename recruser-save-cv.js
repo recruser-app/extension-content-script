@@ -103,16 +103,20 @@ async function SetupSelectVacancyStep() {
     //https://leaverou.github.io/awesomplete/#advanced-examples
     let maxItems = 5
     let autocomplete = new Awesomplete(recruserSelectVacancyAutocomplete, { minChars: 0, maxItems: maxItems, sort: false });
-    window.recruserFilteredVacancies = await fetchVacancies(null, maxItems);
-    autocomplete.list = window.recruserFilteredVacancies.map(v => getFormattedVacancyName(v));
+    autocomplete.list = (await fetchVacancies(null, maxItems)).map(v => ({
+        label: getFormattedVacancyName(v),
+        value: v.title
+    }));
     autocomplete.evaluate();
 
     recruserSelectVacancyAutocomplete.oninput = async () => {
         selectVacancyValidationEl.style.display = 'none';
 
         let input = recruserSelectVacancyAutocomplete.value;
-        window.recruserFilteredVacancies = await fetchVacancies(input, maxItems);
-        autocomplete.list = window.recruserFilteredVacancies.map(v => getFormattedVacancyName(v));
+        autocomplete.list = (await fetchVacancies(input, maxItems)).map(v => ({
+            label: getFormattedVacancyName(v),
+            value: v.title
+        }));
     };
     recruserSelectVacancyNextStep.onclick = async (e) => {
         e.preventDefault();
@@ -132,7 +136,7 @@ async function trySelectVacancy() {
         setStep(window.RecruserDoneStep);
         return;
     }
-    let matchedVacancy = findMatchedVacancyFromLastFiltered(input);
+    let matchedVacancy = await getMatchedVacancyFor(input);
     if (matchedVacancy) {
         if (await doesCvAlreadyAttachedToVacancy(window.recruserCvId, matchedVacancy.id)) {
             selectVacancyValidationEl.style.display = 'block';
@@ -148,16 +152,6 @@ async function trySelectVacancy() {
         selectVacancyValidationEl.style.display = 'block';
         selectVacancyValidationEl.innerText = 'No such vacancy';
     }
-}
-function findMatchedVacancyFromLastFiltered(input) {
-    for (let i = 0; i < window.recruserFilteredVacancies.length; i++) {
-        let vac = window.recruserFilteredVacancies[i];
-        let title = getFormattedVacancyName(vac);
-        if (input.toLowerCase() == title.toLowerCase()) {
-            return vac;
-        }
-    }
-    return null;
 }
 function getFormattedVacancyName(vac) {
     return `${vac.title} (${vac.companyName})`;

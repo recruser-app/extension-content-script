@@ -45,13 +45,11 @@ recruserSetBlockVacancyExitBtn.onclick = (e) => {
 }
 
 let autocomplete = new Awesomplete(recruserSetBlockVacancyAutocomplete, {
-    minChars: 1, maxItems: 3
+    minChars: 1, maxItems: 3, sort: false
 });
-recruserSetBlockVacancyAutocomplete.oninput = () => {
+recruserSetBlockVacancyAutocomplete.oninput = async () => {
     let input = recruserSetBlockVacancyAutocomplete.value;
-    fetchVacancies(input).then(vacancies => {
-        autocomplete.list = vacancies.map(v => v.title);
-    });
+    autocomplete.list = (await fetchVacancies(input)).map(v => v.title);
     recruserSetBlockVacancyValidation.style.display = 'none';
 }
 recruserSetVlockVacancySubmitBtn.onclick = async (e) => {
@@ -84,7 +82,7 @@ async function hideVacancyBlock() {
 
 async function trySetVacancy() {
     let input = recruserSetBlockVacancyAutocomplete.value;
-    let matchedVacancy = await getMatchedVacancyFor(input, includeDescription = true);
+    let matchedVacancy = await getMatchedVacancyFor(input);
     if (matchedVacancy) {
         setVacancyBlockText(matchedVacancy);
         setVacancyViewMode();
