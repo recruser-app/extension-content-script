@@ -1,0 +1,111 @@
+
+async function getPossibleCvIdsByFullNameOrSoruceUrlInDb() {
+    return await fetch(`${getApiHost()}/parser/cv/existence-check`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({
+            url: location.href,
+            html: document.body.innerHTML
+        })
+    }).then(resp => resp.json());
+}
+
+async function parseAndSaveCv() {
+    return await fetch(`${getApiHost()}/cv/from-page`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({
+            url: location.href,
+            html: document.body.innerHTML
+        })
+    }).then(resp => resp.json());
+}
+
+async function saveCandidate(cvId, vacancyId) {
+    return await fetch(`${getApiHost()}/candidates`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({
+            cvId: cvId,
+            vacancyId: vacancyId
+        })
+    }).then(resp => resp.json());
+}
+
+async function saveCandidateStep(candidateId, stepId, comment) {
+    return await fetch(`${getApiHost()}/candidates/${candidateId}/step-transactions`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({
+            newStepId: stepId,
+            comment: comment
+        })
+    }).then(resp => resp.json());
+}
+
+async function getMatchedVacancyFor(input, includeDescription=false) {
+    let vacancies = await fetchVacancies(input, includeDescription);
+    if (vacancies.length == 1 && vacancies[0].title == input) {
+        return vacancies[0];
+    }
+    return null;
+}
+async function fetchVacancies(text, includeDescription=false) {
+    return fetch(`${getApiHost()}/vacancies?count=5&vacancyTitle=${encodeURIComponent(text)}&includeDescription=${includeDescription}`, {
+        method: 'GET',
+        headers: getHeaders()
+    }).then(resp => resp.json());
+}
+
+async function fetchSteps(stepSystemId, relation) {
+    return fetch(`${getApiHost()}/step-systems/${stepSystemId}?relation=${relation}`, {
+        method: 'GET',
+        headers: getHeaders()
+    }).then(resp => resp.json());
+}
+
+async function doesCvAlreadyAttachedToVacancy(cvId, vacancyId) {
+    return fetch(`${getApiHost()}/cvs/${cvId}/vacancy/${vacancyId}`, {
+        method: 'GET',
+        headers: getHeaders()
+    }).then(resp => resp.json());
+}
+
+async function getLastSelectedVacancy() {
+    return await fetch(`${getApiHost()}/settings/recruiter/last-selected-vacancy`, {
+        method: 'GET',
+        headers: getHeaders()
+    }).then(resp => resp.status == 200 ? resp.json() : null);
+}
+async function setLastSelectedVacancy(vacancyId) {
+    fetch(`${getApiHost()}/settings/recruiter/last-selected-vacancy/${vacancyId}`, {
+        method: 'PUT',
+        headers: getHeaders()
+    });
+}
+
+async function getBlockVacancy() {
+    return await fetch(`${getApiHost()}/settings/recruiter/block-vacancy`, {
+        method: 'GET',
+        headers: getHeaders()
+    }).then(resp => resp.status == 200 ? resp.json() : null);
+}
+async function setBlockVacancy(vacancyId) {
+    return await fetch(`${getApiHost()}/settings/recruiter/block-vacancy/${vacancyId}`, {
+        method: 'PUT',
+        headers: getHeaders()
+    });
+}
+
+async function getBlockVacancyVisibility() {
+    return await fetch(`${getApiHost()}/settings/recruiter/block-vacancy-visibility`, {
+        method: 'GET',
+        headers: getHeaders()
+    }).then(resp => resp.json());
+}
+async function setBlockVacancyVisibility(isVisible) {
+    return await fetch(`${getApiHost()}/settings/recruiter/block-vacancy-visibility/${isVisible}`, {
+        method: 'PUT',
+        headers: getHeaders()
+    });
+}

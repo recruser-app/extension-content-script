@@ -1,0 +1,19 @@
+.recruser-next-step{
+    display:inline-block;
+    text-decoration:none;
+    width: 25px;
+    background: #ddfaf6;
+}
+.recruser-next-step:hover:before{
+    background-color: #ddfaf6;
+    border-radius: 50%;
+}
+.recruser-next-step:before{
+    content: '';
+    background: url(assets/images/next-step.png);
+    background-size: cover;
+    position: absolute;
+    width:20px;
+    height:20px;
+    margin: -15px 5px 0 5px;
+}

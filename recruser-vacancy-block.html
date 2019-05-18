@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <link rel="stylesheet" href="recruser-shared.css">
+    <link rel="stylesheet" href="recruser-vacancy-block.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.4/awesomplete.min.css" />
+    <div id="recruser-vacancy-block">
+        <div style="display:none" id="recruser-vacancy-closed" class="recruser-vacancy-block recruser-vacancy-block-closed">
+                <a id="recruser-set-block-vacancy-show-btn" title="Show vacancy"
+                class="recruser-show" href="#"></a>
+        </div>
+        <div style="display:none" id="recruser-vacancy-opened" class="recruser-vacancy-block recruser-vacancy-block-opened">
+            <div id="recruser-set-block-vacancy-view">
+                <div id="recruser-block-vacancy-title" class="recruser-block-vacancy-title"></div>
+                <a id="recruser-set-block-vacancy-edit-btn" title="Change vacancy" class="recruser-edit" href="#"></a>
+                <a style="float: right" id="recruser-set-block-vacancy-hide-btn" title="Hide vacancy"
+                    class="recruser-hide" href="#"></a>
+            </div>
+            <div style="display:none" id="recruser-set-block-vacancy-edit" class="recruser recruser-autocomplete">
+                <input placeholder="Type vacancy name" id="recruser-set-block-vacancy-autocomplete" />
+                <a id="recruser-set-block-vacancy-submit" title="Set" class="recruser-finish" href="#"></a>
+                <a style="float:right" id="recruser-set-block-vacancy-exit-btn" title="Change vacancy"
+                    class="recruser-exit" href="#"></a>
+                <div style="display:none" id="recruser-set-block-vacancy-validation"
+                    class="recruser recruser-validation">
+                </div>
+            </div>
+            <hr>
+            <div id="recruser-block-vacancy-description" class="recruser-block-vacancy-description"></div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.4/awesomplete.min.js" defer></script>
+    <script src="recruser-shared.js" defer></script>
+    <script src="recruser-api.js" defer></script>
+    <script src="recruser-vacancy-block.js" defer></script>
+</body>
+
+</html>

@@ -41,47 +41,10 @@
     outline: none !important;
 }
 
-.recruser-next-step{
-    display:inline-block;
-    text-decoration:none;
-    width: 25px;
-    background: #ddfaf6;
-}
-.recruser-next-step:hover:before{
-    background-color: #ddfaf6;
-    border-radius: 50%;
-}
-.recruser-next-step:before{
-    content: '';
-    background: url(assets/images/next-step.png);
-    background-size: cover;
-    position: absolute;
-    width:20px;
-    height:20px;
-    margin: -15px 5px 0 5px;
-}
-
-.recruser-finish{
-    display:inline-block;
-    text-decoration:none;
-    width: 25px;
-}
-.recruser-finish:hover:before{
-    background-color: #ddfaf6;
-    border-radius: 50%;
-}
-.recruser-finish:before{
-    content: '';
-    background: url(assets/images/finish.png);
-    background-size: cover;
-    position: absolute;
-    width:20px;
-    height:20px;
-    margin: -15px 5px 0 5px;
-}
 
 .recruser li {
     background-color: white !important;
+    color: grey;
 }
 .recruser li:hover {
     background-color: #ddfaf6 !important;
@@ -116,7 +79,3 @@
     color: grey !important;
     margin: 3px 0;
 }
-/* 
-body {
-    background: red;
-} */

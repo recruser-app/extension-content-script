@@ -9,11 +9,10 @@
 </head>
 
 <body>
-    <!--https://extension-components.recruser.com/-->
-    <link rel="stylesheet" href="save-cv.css">
+    <link rel="stylesheet" href="recruser-shared.css">
+    <link rel="stylesheet" href="recruser-save-cv.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.4/awesomplete.min.css" />
     <div id="recruser-save-cv-block">
-
         <div id="saveCv-step">
             <button style="display:none" id="recruser-save-btn" class="recruser-theme-btn">Save CV</button>
             <div style="display:none" id="recruser-multiple-users-in-db">
@@ -43,7 +42,6 @@
         <div style="display:none" class="recruser recruser-autocomplete" id="recruser-selectStep-step">
             <input placeholder="Type step or leave empty" id="recruser-selectStep-autocomplete" />
             <a id="recruser-selectStep-next-step" title="Next step" class="recruser-next-step" href="#"></a>
-            <!-- <a id="recruser-finish" title="Finish" class="recruser-finish" href="#"></a> -->
             <br>
             <input placeholder="Leave comment" id="recruser-step-comment">
             <div style="display:none" id="recruser-selectStep-validation" class="recruser recruser-validation"></div>
@@ -56,8 +54,9 @@
 
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.4/awesomplete.min.js" defer></script>
-    <script src="shared.js" defer></script>
-    <script src="save-cv.js" defer></script>
+    <script src="recruser-shared.js" defer></script>
+    <script src="recruser-api.js" defer></script>
+    <script src="recruser-save-cv.js" defer></script>
 </body>
 
 </html>
