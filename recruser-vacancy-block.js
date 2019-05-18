@@ -58,9 +58,9 @@ recruserSetVlockVacancySubmitBtn.onclick = async (e) => {
     e.preventDefault();
     await trySetVacancy();
 }
-recruserSetBlockVacancyAutocomplete.addEventListener("keyup", async (event) => {
-    if (event.keyCode === 13) { //"Enter"
-        event.preventDefault();
+recruserSetBlockVacancyAutocomplete.addEventListener("keyup", async (e) => {
+    if (e.keyCode === 13) { //"Enter"
+        e.preventDefault();
         await trySetVacancy();
     }
 });

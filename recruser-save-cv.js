@@ -11,6 +11,7 @@ let selectVacancyValidationEl = document.getElementById('recruser-selectVacancy-
 
 let recruserSelectStepBlock = document.getElementById('recruser-selectStep-step');
 let recruserSelectStepAutocomplete = document.getElementById('recruser-selectStep-autocomplete');
+let recruserSelectStepCommentInput = document.getElementById('recruser-step-comment');
 let recruserSelectStepNextStep = document.getElementById('recruser-selectStep-next-step');
 let selectStepValidationEl = document.getElementById('recruser-selectStep-validation');
 
@@ -64,10 +65,10 @@ async function setupParseCvStep() {
 
     if (possibleCvIds.length == 0) {
         recruserSaveBtn.style.display = 'block';
-        recruserSaveBtn.onclick = (e) => {
+        recruserSaveBtn.onclick = async (e) => {
             e.preventDefault();
-            parseCvAndSetCvId();
             setStep(window.RecruserSelectVacancyStep);
+            await parseCvAndSetCvId();
         };
     } else if (possibleCvIds.length == 1) {
         recruserFoundUserInDbText.style.display = 'block';
@@ -94,49 +95,72 @@ async function SetupSelectVacancyStep() {
     recruserSaveBlock.style.display = 'none';
     recruserSelectVacancyBlock.style.display = 'block';
 
-    window.recruserLastVacancy = await getLastSelectedVacancy();
-    if (window.recruserLastVacancy) {
-        recruserSelectVacancyAutocomplete.value = window.recruserLastVacancy.title;
-    }
+    // window.recruserLastVacancy = await getLastSelectedVacancy();
+    // if (window.recruserLastVacancy) {
+    //     recruserSelectVacancyAutocomplete.value = window.recruserLastVacancy.title;
+    // }
 
     //https://leaverou.github.io/awesomplete/#advanced-examples
-    let autocomplete = new Awesomplete(recruserSelectVacancyAutocomplete, {
-        minChars: 1,
-        maxItems: 3
-    });
-    recruserSelectVacancyAutocomplete.oninput = () => {
-        let input = recruserSelectVacancyAutocomplete.value;
-        fetchVacancies(input).then(vacancies => {
-            autocomplete.list = vacancies.map(v => v.title);
-        });
+    let maxItems = 5
+    let autocomplete = new Awesomplete(recruserSelectVacancyAutocomplete, { minChars: 0, maxItems: maxItems, sort: false });
+    window.recruserFilteredVacancies = await fetchVacancies(null, maxItems);
+    autocomplete.list = window.recruserFilteredVacancies.map(v => getFormattedVacancyName(v));
+    autocomplete.evaluate();
+
+    recruserSelectVacancyAutocomplete.oninput = async () => {
         selectVacancyValidationEl.style.display = 'none';
+
+        let input = recruserSelectVacancyAutocomplete.value;
+        window.recruserFilteredVacancies = await fetchVacancies(input, maxItems);
+        autocomplete.list = window.recruserFilteredVacancies.map(v => getFormattedVacancyName(v));
     };
     recruserSelectVacancyNextStep.onclick = async (e) => {
         e.preventDefault();
-        let input = recruserSelectVacancyAutocomplete.value;
-        if (!input.length) { // skip vacancy select
-            window.recruserCandidateId = await saveCandidate(window.recruserCvId, null);
-            setStep(window.RecruserDoneStep);
-            return;
-        }
-
-        let matchedVacancy = await getMatchedVacancyFor(input);
-        if (matchedVacancy) {
-            if (await doesCvAlreadyAttachedToVacancy(window.recruserCvId, matchedVacancy.id)) {
-                selectVacancyValidationEl.style.display = 'block';
-                selectVacancyValidationEl.innerText = 'CV already there';
-            } else {
-                window.recruserLastVacancy = matchedVacancy;
-                setStep(window.RecruserSelectStepStep);
-                setLastSelectedVacancy(matchedVacancy.id);
-                window.recruserCandidateId = await saveCandidate(window.recruserCvId, window.recruserLastVacancy.id);
-            }
-        }
-        else {
-            selectVacancyValidationEl.style.display = 'block';
-            selectVacancyValidationEl.innerText = 'No such vacancy';
-        }
+        await trySelectVacancy();
     };
+    recruserSelectVacancyAutocomplete.addEventListener("keyup", async (e) => {
+        if (e.keyCode === 13) { //"Enter"
+            e.preventDefault();
+            await trySelectVacancy();
+        }
+    });
+}
+async function trySelectVacancy() {
+    let input = recruserSelectVacancyAutocomplete.value;
+    if (!input.length) { // skip vacancy select
+        window.recruserCandidateId = await saveCandidate(window.recruserCvId, null);
+        setStep(window.RecruserDoneStep);
+        return;
+    }
+    let matchedVacancy = findMatchedVacancyFromLastFiltered(input);
+    if (matchedVacancy) {
+        if (await doesCvAlreadyAttachedToVacancy(window.recruserCvId, matchedVacancy.id)) {
+            selectVacancyValidationEl.style.display = 'block';
+            selectVacancyValidationEl.innerText = 'CV already there';
+        } else {
+            window.recruserLastVacancy = matchedVacancy;
+            setStep(window.RecruserSelectStepStep);
+            setLastSelectedVacancy(matchedVacancy.id);
+            window.recruserCandidateId = await saveCandidate(window.recruserCvId, window.recruserLastVacancy.id);
+        }
+    }
+    else {
+        selectVacancyValidationEl.style.display = 'block';
+        selectVacancyValidationEl.innerText = 'No such vacancy';
+    }
+}
+function findMatchedVacancyFromLastFiltered(input) {
+    for (let i = 0; i < window.recruserFilteredVacancies.length; i++) {
+        let vac = window.recruserFilteredVacancies[i];
+        let title = getFormattedVacancyName(vac);
+        if (input.toLowerCase() == title.toLowerCase()) {
+            return vac;
+        }
+    }
+    return null;
+}
+function getFormattedVacancyName(vac) {
+    return `${vac.title} (${vac.companyName})`;
 }
 
 async function setupSelectStepStep() {
@@ -147,46 +171,57 @@ async function setupSelectStepStep() {
     recruserSelectVacancyBlock.style.display = 'none';
     recruserSelectStepBlock.style.display = 'block';
 
-    let autocomplete = new Awesomplete(recruserSelectStepAutocomplete, {
-        minChars: 1,
-        maxItems: 15,
-        sort: (a, b) => a.order > b.order
-    });
-    
     window.recruserStepSystem = await fetchSteps(window.recruserLastVacancy.stepSystemId, window.recruserLastVacancy.recruiterRelation);
     let stepTitles = window.recruserStepSystem.steps
         .filter(s => s.canUse == true)
         .sort((a, b) => a.order > b.order)
         .map(s => s.title);
-    autocomplete.list = stepTitles;
-    recruserSelectStepAutocomplete.value = stepTitles[0];
 
-    recruserSelectStepNextStep.oninput = () => {
+    let autocomplete = new Awesomplete(recruserSelectStepAutocomplete, { minChars: 0, maxItems: stepTitles.length, sort: false });
+    autocomplete.list = stepTitles;
+    autocomplete.evaluate();
+
+    recruserSelectStepAutocomplete.oninput = () => {
         selectStepValidationEl.style.display = 'none';
     };
+    recruserSelectStepAutocomplete.addEventListener("keyup", async (e) => {
+        if (e.keyCode === 13) { //"Enter"
+            e.preventDefault();
+            await trySelectStep();
+        }
+    });
+    recruserSelectStepCommentInput.addEventListener("keyup", async (e) => {
+        if (e.keyCode === 13) { //"Enter"
+            e.preventDefault();
+            await trySelectStep();
+        }
+    });
     recruserSelectStepNextStep.onclick = async (e) => {
         e.preventDefault();
-        let input = recruserSelectStepAutocomplete.value;
-        if (!input.length) { // skip step 
-            setStep(window.RecruserDoneStep);
-            //TODO: save to google sheet if spreadSheetUrl present
-            return;
-        }
-
-        let possibleSteps = window.recruserStepSystem.steps.filter(s => s.title == input);
-        if (possibleSteps.length == 1) {
-            window.recruserSelectedStepId = possibleSteps[0].id;
-
-            setStep(window.RecruserDoneStep);
-            let comment = document.getElementById('recruser-step-comment').value;
-            await saveCandidateStep(window.recruserCandidateId, window.recruserSelectedStepId, comment)
-            //TODO: save to google sheet if spreadSheetUrl present
-        }
-        else {
-            selectStepValidationEl.style.display = 'block';
-            selectStepValidationEl.innerHTML = 'No such step';
-        }
+        await trySelectStep();
     };
+}
+async function trySelectStep() {
+    let input = recruserSelectStepAutocomplete.value;
+    if (!input.length) { // skip step 
+        setStep(window.RecruserDoneStep);
+        //TODO: save to google sheet if spreadSheetUrl present
+        return;
+    }
+
+    let possibleSteps = window.recruserStepSystem.steps.filter(s => s.title.toLowerCase() == input.toLowerCase());
+    if (possibleSteps.length == 1) {
+        window.recruserSelectedStepId = possibleSteps[0].id;
+
+        setStep(window.RecruserDoneStep);
+        let comment = recruserSelectStepCommentInput.value;
+        await saveCandidateStep(window.recruserCandidateId, window.recruserSelectedStepId, comment)
+        //TODO: save to google sheet if spreadSheetUrl present
+    }
+    else {
+        selectStepValidationEl.style.display = 'block';
+        selectStepValidationEl.innerHTML = 'No such step';
+    }
 }
 
 function setupDoneStep() {

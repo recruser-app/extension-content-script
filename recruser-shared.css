@@ -21,7 +21,7 @@
 
 .recruser input,select {
     border-radius: 5px !important;
-    background-color: white;
+    background-color: white !important;
 }
 .recruser input:hover, select:hover, textarea:hover {
     border: 1px solid var(--recruser-color) !important;
@@ -29,12 +29,13 @@
 
 .recruser-autocomplete li {
     border: 1px solid var(--recruser-color) !important;
-    background-color: white;
+    border-radius: 5px !important;
+    background-color: white !important;
 }
 .recruser input {
     border: 1px solid var(--recruser-color) !important;
     padding: 5px !important;
-    width: 200px !important;
+    width: 250px !important;
     margin: 3px 0;
 }
 .recruser-autocomplete input:focus {
@@ -44,7 +45,7 @@
 
 .recruser li {
     background-color: white !important;
-    color: grey;
+    color: grey !important;
 }
 .recruser li:hover {
     background-color: #ddfaf6 !important;
@@ -73,7 +74,7 @@
     color: var(--recruser-color) !important;
     border: 1px solid #f6bf45 !important;
     border-radius: 5px !important;
-    width: 210px !important;
+    width: 260px !important;
     text-align: center !important;
     padding: 3px 0 !important;
     color: grey !important;
