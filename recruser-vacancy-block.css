@@ -20,7 +20,7 @@
     font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif !important;
 }
 .recruser-vacancy-block-opened {
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
     min-height: 150px !important;
     max-height: 500px !important;
     width: 400px !important;
