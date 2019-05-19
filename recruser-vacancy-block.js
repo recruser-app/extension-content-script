@@ -16,7 +16,7 @@ let recruserBlockVacancyTitle = document.getElementById('recruser-block-vacancy-
 let recruserBlockVacancyDescription = document.getElementById('recruser-block-vacancy-description');
 
 (async () => {
-    let isVacancyBlockVisible = true;//await getBlockVacancyVisibility();
+    let isVacancyBlockVisible = await getBlockVacancyVisibility();
     if (isVacancyBlockVisible) {
         showVacancyBlock();
     } else {
@@ -63,17 +63,24 @@ recruserSetBlockVacancyAutocomplete.addEventListener("keyup", async (e) => {
     }
 });
 
+new ResizeObserver(async () => {
+    console.log(recruserVacancyOpenedBlock.style.height);
+    setBlockVacancyHeight(recruserVacancyOpenedBlock.style.height)
+}).observe(recruserVacancyOpenedBlock);
 
 async function showVacancyBlock() {
-    recruserVacancyOpenedBlock.style.display = 'block';
-    recruserVacancyClosedBlock.style.display = 'none';
-    
+    let height = await getBlockVacancyHeight();
+    if(height) {
+        recruserVacancyOpenedBlock.style.height = `${height}px`;    
+    }
     let recruserBlockVacancy = await getBlockVacancy();
     if (recruserBlockVacancy) {
         setVacancyBlockText(recruserBlockVacancy);
     } else {
         setVacancyEditMode(showExitBtn = false);
     }
+    recruserVacancyOpenedBlock.style.display = 'block';
+    recruserVacancyClosedBlock.style.display = 'none';
 }
 async function hideVacancyBlock() {
     recruserVacancyOpenedBlock.style.display = 'none';

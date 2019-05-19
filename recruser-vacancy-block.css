@@ -9,8 +9,8 @@
     color: white !important;
     opacity: 0.75 !important;
     position: fixed !important;
-    top: 100px !important;
-    right: 0 !important;
+    top: 15% !important;
+    right: 0.5% !important;
     text-align: left !important;
     padding: 10px !important;
     font-size: 17px !important;
@@ -21,10 +21,12 @@
 }
 .recruser-vacancy-block-opened {
     overflow-y: auto !important;
-    min-height: 150px !important;
-    max-height: 500px !important;
-    width: 400px !important;
+    resize: vertical !important;
+    min-height: 25%;
+    height: 65%;
+    width: 27%;
 }
+
 .recruser-vacancy-block-closed {
     /* width: 50px !important;
     height: 60px !important; */
