@@ -69,13 +69,9 @@ new ResizeObserver(async () => {
 }).observe(recruserVacancyOpenedBlock);
 
 async function showVacancyBlock() {
-    let height = await getBlockVacancyHeight();
-    if(height) {
-        recruserVacancyOpenedBlock.style.height = `${height}px`;    
-    }
-    let recruserBlockVacancy = await getBlockVacancy();
-    if (recruserBlockVacancy) {
-        setVacancyBlockText(recruserBlockVacancy);
+    let blockVacancy = await getBlockVacancy();
+    if (blockVacancy) {
+        setVacancyBlockText(blockVacancy);
     } else {
         setVacancyEditMode(showExitBtn = false);
     }
@@ -103,6 +99,8 @@ async function trySetVacancy() {
 }
 
 function setVacancyBlockText(vacancy) {
+    recruserVacancyOpenedBlock.style.height = `${vacancy.bLockHeight}px`;
+
     recruserBlockVacancyTitle.textContent = vacancy ? `${vacancy.title} (${vacancy.companyName})` : '';
     recruserBlockVacancyDescription.innerHTML = vacancy ? vacancy.description : '';
 }

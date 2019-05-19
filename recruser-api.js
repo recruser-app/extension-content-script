@@ -113,12 +113,6 @@ async function setBlockVacancyVisibility(isVisible) {
     });
 }
 
-async function getBlockVacancyHeight() {
-    return await fetch(`${getApiHost()}/settings/recruiter/block-vacancy-height`, {
-        method: 'GET',
-        headers: getHeaders()
-    }).then(resp => resp.status == 200 ? resp.json() : null);
-}
 async function setBlockVacancyHeight(height) {
     if (height) {
         return await fetch(`${getApiHost()}/settings/recruiter/block-vacancy-height/${Number.parseInt(height)}`, {
