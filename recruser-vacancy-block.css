@@ -15,7 +15,7 @@
     padding: 10px !important;
     font-size: 17px !important;
     overflow-x: auto !important;
-    z-index: 999 !important;
+    z-index: 9999 !important;
     word-wrap: 'break-all' !important;
     font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif !important;
 }
