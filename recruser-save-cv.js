@@ -1,13 +1,12 @@
 let recruserSaveBlock = document.getElementById('saveCv-step');
-let recruserSaveBtn = document.getElementById('recruser-save-btn');
-let recruserMultipleProfilesFoundText = document.getElementById('recruser-multiple-users-in-db');
-let recruserFoundUserInDbText = document.getElementById('recruser-user-in-db');
-let recruserAddCvToAnotherVacancyBtn = document.getElementById('recruser-select-another-vacancy-btn');
+
+let recruserAddExistingCvToVacancyBtn = document.getElementById('recruser-found-add-candidate-anyway');
 
 let recruserSelectVacancyBlock = document.getElementById('recruser-selectVacancy-step');
 let recruserSelectVacancyAutocomplete = document.getElementById('recruser-selectVacancy-autocomplete');
 let recruserSelectVacancyNextStep = document.getElementById('recruser-selectVacancy-next-step');
 let selectVacancyValidationEl = document.getElementById('recruser-selectVacancy-validation');
+let recruserFoundCandidateValidationEl = document.getElementById('recruser-found-candidate');
 
 let recruserSelectStepBlock = document.getElementById('recruser-selectStep-step');
 let recruserSelectStepAutocomplete = document.getElementById('recruser-selectStep-autocomplete');
@@ -17,11 +16,8 @@ let selectStepValidationEl = document.getElementById('recruser-selectStep-valida
 
 let recruserDoneBlock = document.getElementById('recruser-done-step');
 
-let recruserProfileLink = document.getElementById('recruser-profile-link');
-
 (async () => {
     initSteps();
-    setUserIfTestingEnvironment();
     await setStep(window.RecruserParseCvIfNotExistInDbStep);
 })();
 
@@ -60,63 +56,51 @@ async function ManageMarkup(step) {
 }
 
 async function setupParseCvStep() {
-    let possibleCvIds = await getPossibleCvIdsByFullNameOrSoruceUrlInDb();
+    //Если я хочу добавить кандидата на вакансию, но оказывается, что он уже там есть - также помечается как добавленый мною
+    let similarCvs = await getSimilarCvsInRecruiterDb();
     recruserSaveBlock.style.display = 'block';
 
-    if (possibleCvIds.length == 0) {
+    if (similarCvs.length == 0) {
+        let recruserSaveBtn = document.getElementById('recruser-save-btn');
         recruserSaveBtn.style.display = 'block';
         recruserSaveBtn.onclick = async (e) => {
             e.preventDefault();
             setStep(window.RecruserSelectVacancyStep);
-            await parseCvAndSetCvId();
+            window.recruserCvId = await parseAndSaveCv();
         };
-    } else if (possibleCvIds.length == 1) {
-        recruserFoundUserInDbText.style.display = 'block';
-        recruserAddCvToAnotherVacancyBtn.onclick = (e) => {
+    } else {
+        document.getElementById('recruser-similar-block').style.display = 'block';
+        document.getElementById('recruser-select-found-cv-btn').onclick = (e) => {
             e.preventDefault();
-            window.recruserCvId = possibleCvIds[0];
+            toggleCvViewer(isShown = false);
+            window.recruserCvId = similarCvs[getCurrentCvIndex()].id;
             setStep(window.RecruserSelectVacancyStep);
         };
-        recruserProfileLink.setAttribute('href', `https://account.recruser.com/cv-list/${window.recruserCvId}`);
-        recruserProfileLink.setAttribute('target', '_blank');
-    } else {
-        recruserMultipleProfilesFoundText.style.display = 'block';
-        recruserProfileLink.setAttribute('href', `https://account.recruser.com/cv-list?ids=${possibleCvIds}`);
-        recruserProfileLink.setAttribute('target', '_blank');
+        document.getElementById('recruser-use-new-cv-btn').onclick = async () => {
+            toggleCvViewer(isShown = false);
+            setStep(window.RecruserSelectVacancyStep);
+            window.recruserCvId = await parseAndSaveCv();
+        };
+        setCvViewerToggling();
+        setCvViewer(similarCvs);
     }
-}
-async function parseCvAndSetCvId() {
-    window.recruserCvIsParsing = true;
-    window.recruserCvId = await parseAndSaveCv();
-    window.recruserCvIsParsing = false;
 }
 
 async function SetupSelectVacancyStep() {
     recruserSaveBlock.style.display = 'none';
     recruserSelectVacancyBlock.style.display = 'block';
 
-    // window.recruserLastVacancy = await getLastSelectedVacancy();
-    // if (window.recruserLastVacancy) {
-    //     recruserSelectVacancyAutocomplete.value = window.recruserLastVacancy.title;
-    // }
-
-    //https://leaverou.github.io/awesomplete/#advanced-examples
     let maxItems = 5
     let autocomplete = new Awesomplete(recruserSelectVacancyAutocomplete, { minChars: 0, maxItems: maxItems, sort: false });
-    autocomplete.list = (await fetchVacancies(null, maxItems)).map(v => ({
-        label: getFormattedVacancyName(v),
-        value: v.title
-    }));
+    await setAutocompleteVacancyListByInput(autocomplete, null, maxItems);
     autocomplete.evaluate();
 
     recruserSelectVacancyAutocomplete.oninput = async () => {
         selectVacancyValidationEl.style.display = 'none';
+        recruserFoundCandidateValidationEl.style.display = 'none';
 
         let input = recruserSelectVacancyAutocomplete.value;
-        autocomplete.list = (await fetchVacancies(input, maxItems)).map(v => ({
-            label: getFormattedVacancyName(v),
-            value: v.title
-        }));
+        await setAutocompleteVacancyListByInput(autocomplete, input, maxItems);
     };
     recruserSelectVacancyNextStep.onclick = async (e) => {
         e.preventDefault();
@@ -129,23 +113,51 @@ async function SetupSelectVacancyStep() {
         }
     });
 }
+async function setAutocompleteVacancyListByInput(autocomplete, input, maxItems) {
+    let foundVacancies = await fetchVacancies(input, maxItems);
+    let availableVacancies = foundVacancies.filter(v => isVacancyAvailable(v));
+    window.recruserAutocompleteVacancyList = availableVacancies;
+    autocomplete.list = (window.recruserAutocompleteVacancyList).map(v => ({
+        label: getFormattedVacancyName(v),
+        value: v.title
+    }));
+}
+function isVacancyAvailable(vacancy) {
+    let isVacancyActive = vacancy.status == 1;
+    let isVacancyOnHold = vacancy.status == 2;
+    return isVacancyActive || isVacancyOnHold;
+}
+
 async function trySelectVacancy() {
+    if (!window.recruserCvId) return;
+
     let input = recruserSelectVacancyAutocomplete.value;
-    if (!input.length) { // skip vacancy select
-        window.recruserCandidateId = await saveCandidate(window.recruserCvId, null);
+    if (!input.length) {
+        // skip vacancy select
         setStep(window.RecruserDoneStep);
         return;
     }
-    let matchedVacancy = await getMatchedVacancyFor(input);
+    let matchedVacancy = window.recruserAutocompleteVacancyList.find(v => v.title.toLowerCase() == input.toLowerCase());
     if (matchedVacancy) {
-        if (await doesCvAlreadyAttachedToVacancy(window.recruserCvId, matchedVacancy.id)) {
-            selectVacancyValidationEl.style.display = 'block';
-            selectVacancyValidationEl.innerText = 'CV already there';
-        } else {
+        let similarCvsInVacancy = await getSimilarCvsInVacancy(matchedVacancy.id);
+        if (similarCvsInVacancy.length == 0) {
             window.recruserLastVacancy = matchedVacancy;
             setStep(window.RecruserSelectStepStep);
-            setLastSelectedVacancy(matchedVacancy.id);
-            window.recruserCandidateId = await saveCandidate(window.recruserCvId, window.recruserLastVacancy.id);
+            window.recruserCandidateId = await saveCandidate(window.recruserCvId, matchedVacancy.id);
+        } else {
+            recruserFoundCandidateValidationEl.style.display = 'block';
+
+            document.getElementById('recruser-similar-block').style.display = 'block';
+            setCvViewerToggling();
+            setCvViewer(similarCvsInVacancy, showSelectBtn = false);
+            toggleCvViewer(isShown = true);
+
+            document.getElementById('recruser-found-add-candidate-anyway').onclick = (e) => {
+                e.preventDefault();
+                toggleCvViewer(isShown = false);
+                window.recruserCvId = similarCvs[getCurrentCvIndex()].id;
+                setStep(window.RecruserSelectVacancyStep);
+            };
         }
     }
     else {
@@ -158,17 +170,16 @@ function getFormattedVacancyName(vac) {
 }
 
 async function setupSelectStepStep() {
-    if (!window.recruserLastVacancy.stepSystemId) {
+    if (!window.recruserLastVacancy.hasSteps) {
         setStep(window.RecruserDoneStep);
     }
 
     recruserSelectVacancyBlock.style.display = 'none';
     recruserSelectStepBlock.style.display = 'block';
 
-    window.recruserStepSystem = await fetchSteps(window.recruserLastVacancy.stepSystemId, window.recruserLastVacancy.recruiterRelation);
-    let stepTitles = window.recruserStepSystem.steps
+    window.recruserVacancySteps = await fetchVacancySteps(window.recruserLastVacancy.id);
+    let stepTitles = window.recruserVacancySteps
         .filter(s => s.canUse == true)
-        .sort((a, b) => a.order > b.order)
         .map(s => s.title);
 
     let autocomplete = new Awesomplete(recruserSelectStepAutocomplete, { minChars: 0, maxItems: stepTitles.length, sort: false });
@@ -203,9 +214,9 @@ async function trySelectStep() {
         return;
     }
 
-    let possibleSteps = window.recruserStepSystem.steps.filter(s => s.title.toLowerCase() == input.toLowerCase());
-    if (possibleSteps.length == 1) {
-        window.recruserSelectedStepId = possibleSteps[0].id;
+    let possibleStep = window.recruserVacancySteps.find(s => s.title.toLowerCase() == input.toLowerCase());
+    if (possibleStep) {
+        window.recruserSelectedStepId = possibleStep.id;
 
         setStep(window.RecruserDoneStep);
         let comment = recruserSelectStepCommentInput.value;
@@ -222,4 +233,132 @@ function setupDoneStep() {
     recruserSelectVacancyBlock.style.display = 'none';
     recruserSelectStepBlock.style.display = 'none';
     recruserDoneBlock.style.display = 'block';
+}
+
+
+function setCvViewerToggling() {
+    document.getElementById('recruser-show-cv-viewer-block-btn1').onclick = () => {
+        setCvViewerVisibility(isShown = true);
+    };
+
+    let showCvViewBlockBtn = document.getElementById('recruser-show-cv-viewer-block-btn2');
+    showCvViewBlockBtn.onclick = () => {
+        setCvViewerVisibility(isShown = true);
+    };
+
+    let hideCvViewBlockBtn = document.getElementById('recruser-hide-cv-viewer-block-btn');
+    hideCvViewBlockBtn.onclick = () => {
+        setCvViewerVisibility(isShown = false);
+    };
+
+    function setCvViewerVisibility(isShown) {
+        showCvViewBlockBtn.style.display = isShown ? 'none' : 'inline';
+        hideCvViewBlockBtn.style.display = isShown ? 'inline' : 'none';
+        toggleCvViewer(isShown = isShown);
+    }
+
+    setCvViewerVisibility(isShown = true);
+}
+
+
+function setCvViewer(cvList, showSelectBtn = true) {
+    console.log(showSelectBtn);
+    document.getElementById('recruser-select-found-cv-btn').style.display = showSelectBtn ? 'block' : 'none';
+
+    window.recruserSimilarCvs = cvList;
+    document.getElementById('recruser-cv-total').textContent = cvList.length;
+    document.getElementById('recruser-cv-current').textContent = getCurrentCvIndex() + 1;
+
+    let openCv = window.recruserSimilarCvs[getCurrentCvIndex()];
+    console.log(openCv);
+    if (openCv.photoUrl)
+        document.getElementById('recruser-cv-photo').setAttribute('src', openCv.photoUrl);
+    document.getElementById('recruser-cv-name').textContent = openCv.fullName;
+    document.getElementById('recruser-cv-position').textContent = openCv.position;
+    if (openCv.birthDate) {
+        let age = new Date().getFullYear() - new Date(openCv.birthDate).getFullYear();
+        document.getElementById('recruser-cv-age').textContent = `Age: ${age} years`;
+    }
+    if (openCv.sourceUrls) {
+        let html = '';
+        openCv.sourceUrls.forEach(url => {
+            html += `<br>${getSiteUrlMarkup(url)}`;
+        });
+        document.getElementById('recruser-cv-sources').innerHTML = `Sources: ${html}`;
+    }
+    if (openCv.contacts) {
+        let html = '';
+        openCv.contacts.forEach(contact => {
+            if (contact.type == 4)
+                html += `<br>${getContactNameForType(contact.type)}: ${getSiteUrlMarkup(contact.value)}`;
+            else
+                html += `<br>${getContactNameForType(contact.type)}: ${contact.value}`;
+        });
+        document.getElementById('recruser-cv-contacts').innerHTML = html;
+    }
+    if (openCv.experiences) {
+        let html = '';
+        openCv.experiences.forEach((exp, index, items) => {
+            html += `
+            <div class="recruser-cv-experience-item">
+                <div>
+                    <span>${exp.companyName},</span><br>
+                    <i>${exp.position}</i>
+                </div>
+                <div style="display:${exp.startDate ? 'display' : 'none'}">
+                    ${formatDate(exp.startDate)} - ${formatDate(exp.endDate)}
+                </div>
+            </div>
+            `;
+            if (index < items.length - 1)
+                html += '<hr class="light-hr">';
+        });
+        document.getElementById('recruser-cv-experiences').innerHTML = html;
+    }
+
+    document.getElementById('recruser-cv-viewer-next').onclick = () => {
+        updateCurrentCvIndex(delta = 1, cvList.length);
+        setCvViewer(cvList);
+    };
+    document.getElementById('recruser-cv-viewer-prev').onclick = () => {
+        updateCurrentCvIndex(delta = -1, cvList.length);
+        setCvViewer(cvList);
+    };
+}
+
+function formatDate(dateStr) {
+    let date = new Date(dateStr);
+
+    let month = date.getMonth();
+    let monthStr = month >= 10 ? month : `0${month}`;
+
+    return `${monthStr}.${date.getFullYear()}`;
+}
+function getSiteUrlMarkup(url) {
+    let site = getSiteNameFromUrl(url);
+    return `<a target="_blank" href="${url}">${site}</a>`
+}
+function getSiteNameFromUrl(url) {
+    let site = url.replace('https://', '');
+    site = site.replace('file:///', '');
+    return site.substring(0, site.indexOf('/'));
+}
+function getContactNameForType(type) {
+    if (type == 1) return 'Phone';
+    if (type == 2) return 'Email';
+    if (type == 3) return 'Skype';
+    if (type == 4) return 'Link';
+}
+function getCurrentCvIndex() {
+    return window.recruserCurrentCvIndex ? window.recruserCurrentCvIndex : 0;
+}
+function updateCurrentCvIndex(delta, total) {
+    let newValue = getCurrentCvIndex() + delta;
+    if (newValue < 0 || newValue >= total)
+        return;
+    window.recruserCurrentCvIndex = newValue;
+}
+function toggleCvViewer(isShown) {
+    let cvViewBlock = document.getElementById('recruser-cv-viewer');
+    cvViewBlock.style.display = isShown ? 'block' : 'none';
 }

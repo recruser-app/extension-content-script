@@ -17,32 +17,44 @@
 
 <body>
     <link rel="stylesheet" href="recruser-save-cv.css">
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
 
     <div id="recruser-save-cv-block">
         <div id="saveCv-step">
-            <button style="display:none" id="recruser-save-btn" class="recruser-theme-btn">Save CV</button>
-            <div style="display:none" id="recruser-multiple-users-in-db">
+            <button id="recruser-save-btn" class="recruser-theme-btn" style="display:none">
+                Save CV
+            </button>
+            <div id="recruser-similar-block" style="display:none">
                 <div class="recruser recruser-label">
-                    <span>Multiple profiles found. </span>
-                    <a class="recruser-link" id="recruser-profile-link" href="#">Check them</a>
-                </div>
-            </div>
-            <div style="display:none" id="recruser-user-in-db">
-                <div class="recruser recruser-label">
-                    <span>Already saved. </span>
-                    <a class="recruser-link" id="recruser-profile-link" href="#">Go to profile</a>
-                </div>
-                <div class="recruser recruser-label">
-                    <span>Or add to </span>
-                    <a class="recruser-link" id="recruser-select-another-vacancy-btn" href="#">another vacancy</a>
+                    <span>Similar CV's found.</span>
+                    <span id="recruser-show-cv-viewer-block-btn1" class="fake-styled-href">Select</span>
+                    <span> or </span>
+                    <span id="recruser-use-new-cv-btn" class="fake-styled-href">save new</span>
+                    <div class="recruser-toggle-cv-viewer-block">
+                        <span id="recruser-show-cv-viewer-block-btn2" title="Show found CV's"
+                            class="recruser-roll-down fake-styled-href"></span>
+                        <span id="recruser-hide-cv-viewer-block-btn" style="display: none" title="Hide found CV's"
+                            class="recruser-roll-up fake-styled-href"></span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div style="display:none" class="recruser recruser-autocomplete" id="recruser-selectVacancy-step">
+        <div id="recruser-selectVacancy-step" class="recruser recruser-autocomplete" style="display:none">
             <input placeholder="Type vacancy or leave empty" id="recruser-selectVacancy-autocomplete" />
-            <a id="recruser-selectVacancy-next-step" title="Next step" class="recruser-next-step" href="#"></a>
+            <span id="recruser-selectVacancy-next-step" title="Next step"
+                class="recruser-next-step fake-styled-href"></span>
             <div style="display:none" id="recruser-selectVacancy-validation" class="recruser recruser-validation"></div>
+            <div style="display:none" id="recruser-found-candidate" class="recruser recruser-validation">
+                <span>We found similar CV's in vacancy.</span>
+                <span class="fake-styled-href" id="recruser-found-add-candidate-anyway"> Add anyway</span>
+            </div>
         </div>
 
         <div style="display:none" class="recruser recruser-autocomplete" id="recruser-selectStep-step">
@@ -50,7 +62,8 @@
             <a id="recruser-selectStep-next-step" title="Next step" class="recruser-next-step" href="#"></a>
             <br>
             <input placeholder="Leave comment" id="recruser-step-comment">
-            <div style="display:none" id="recruser-selectStep-validation" class="recruser recruser-validation"></div>
+            <div style="display:none" id="recruser-selectStep-validation" class="recruser recruser-validation">
+            </div>
         </div>
 
         <div style="display:none" class="recruser recruser-label" id="recruser-done-step">
@@ -58,7 +71,67 @@
             <a class="recruser-link" id="recruser-profile-link" href="#">Go to profile</a>
         </div>
 
+        <div id="recruser-cv-viewer" class="recruser-cv-viewer" style="display:none">
+            <div class="recruser-cv-viewer-navigation recruser-cv-section">
+                <div></div>
+                <div id="recruser-cv-viewer-prev" class="fake-styled-href"><b>&lt;&lt;</b></div>
+                <div><b id="recruser-cv-current"></b> of <span id="recruser-cv-total"></span></div>
+                <div id="recruser-cv-viewer-next" class="fake-styled-href"><b>>></b></div>
+                <div></div>
+            </div>
+            <div class="recruser-cv-viewer-content">
+                <div class="recruser-cv-section recruser-personal-section">
+                    <div style="padding: 0 5px;">
+                        <img id="recruser-cv-photo" src="https://images.cf-rabota.com.ua/2017/04/non-photo.png"
+                            width="100%">
+                    </div>
+                    <div>
+                        <div id="recruser-cv-name" class="fake-styled-href"></div>
+                        <div id="recruser-cv-position" style="font-style: italic"></div>
+                        <div id="recruser-cv-age"></div>
+                        <div id="recruser-cv-sources"></div>
+                    </div>
+                </div>
+                <div class="recruser-cv-section">
+                    <b>Contacts:</b>
+                    <div id="recruser-cv-contacts"></div>
+                </div>
+                <div class="recruser-cv-last-section">
+                    <b>Experience:</b><br>
+                    <div id="recruser-cv-experiences"></div>
+                </div>
+            </div>
+            <div class="recruser-cv-last-section">
+                <button id="recruser-select-found-cv-btn" style="width: 100% !important"
+                    title="Existing CV will be supplemented with information from this page"
+                    class="recruser-theme-btn recruser-theme-btn-hovered">
+                    Select and update CV
+                </button>
+            </div>
+        </div>
+
     </div>
+
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+    <p>askdjhasjkd haskjdh akdjasd asd asd asd a askdjhasjkd haskjdh akdjasd asd asd asd a</p>
+
+
     <script src="recruser-save-cv.js"></script>
 </body>
 

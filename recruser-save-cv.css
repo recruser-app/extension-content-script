@@ -1,3 +1,31 @@
+
+#recruser-save-cv-block {
+    font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif !important;
+    position: relative !important;
+    width: 312p;
+    /* top: 15% !important; */
+    /* left: 0.5% !important; */
+    z-index: 9999 !important;
+}
+
+#recruser-save-cv-block a {
+    cursor: pointer;
+    color: var(--recruser-color) !important;
+    text-decoration: none !important;
+ }
+
+.recruser-label {
+    background-color: #eefcfa !important;
+    color: var(--recruser-color) !important;
+    border: 1px solid var(--recruser-color) !important;
+    border-radius: 5px !important;
+    width: 300px !important;
+    text-align: center !important;
+    padding: 3px 5px !important;
+    color: var(--recruser-color) !important;
+    user-select: none;
+}
+
 .recruser-next-step{
     display:inline-block;
     text-decoration:none;
@@ -16,4 +44,71 @@
     width:20px;
     height:20px;
     margin: -15px 5px 0 5px;
+}
+
+.recruser-roll-up:before{
+    content: '';
+    background: url(assets/images/roll-up.png);
+    background-size: cover;
+    position: absolute;
+    width:16px;
+    height:10px;
+    margin: 4px 0 0 0px;
+}
+.recruser-roll-down:before{
+    content: '';
+    background: url(assets/images/roll-down.png);
+    background-size: cover;
+    position: absolute;
+    width:16px;
+    height:10px;
+    margin: 4px 0 0 0px;
+}
+
+.recruser-toggle-cv-viewer-block {
+    border-left: 1px solid var(--recruser-color); 
+    display: inline; 
+    margin: 0 10px; 
+    padding-left: 10px;
+}
+
+.recruser-cv-viewer {
+    position: absolute !important;
+    border: 1px solid var(--recruser-color);
+    border-radius: 5px;
+    width: 300px;
+    padding: 5px;
+    color: grey;
+    background-color: white;
+    margin-top: 5px;
+}
+.recruser-cv-viewer-content {
+    max-height: 300px;
+    overflow-y: auto;
+}
+.recruser-cv-section {
+    padding: 5px 0;
+    border-bottom: 1px solid var(--recruser-color);
+}
+.recruser-cv-last-section {
+    padding: 5px 0;
+}
+.recruser-personal-section {
+    display: grid;
+    grid-template-columns: 3fr 6fr
+}
+.recruser-cv-viewer-navigation {
+    display: grid;
+    grid-template-columns: 3fr 3fr 3fr 3fr 3fr;
+    text-align: center;
+    user-select: none;
+}
+
+.recruser-cv-experience-item {
+    display: grid; 
+    grid-template-columns: 2fr 1fr;
+}
+
+.light-hr {
+    border: 0.5px solid lightgrey;
 }

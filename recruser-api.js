@@ -1,6 +1,16 @@
 
-async function getPossibleCvIdsByFullNameOrSoruceUrlInDb() {
-    return await fetch(`${getApiHost()}/parser/cv/existence-check`, {
+async function getSimilarCvsInRecruiterDb() {
+    return await fetch(`${getApiHost()}/cvs/similar`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({
+            url: location.href,
+            html: document.body.innerHTML
+        })
+    }).then(resp => resp.json());
+}
+async function getSimilarCvsInVacancy(vacancyId) {
+    return await fetch(`${getApiHost()}/cvs/similar/vacancy/${vacancyId}`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({
@@ -11,7 +21,7 @@ async function getPossibleCvIdsByFullNameOrSoruceUrlInDb() {
 }
 
 async function parseAndSaveCv() {
-    return await fetch(`${getApiHost()}/cv/from-page`, {
+    return await fetch(`${getApiHost()}/cvs`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({
@@ -43,16 +53,9 @@ async function saveCandidateStep(candidateId, stepId, comment) {
     }).then(resp => resp.json());
 }
 
-async function getMatchedVacancyFor(text) {
-    return await fetch(`${getApiHost()}/vacancies/name/${encodeURIComponent(text)}`, {
-        method: 'GET',
-        headers: getHeaders()
-    }).then(resp => resp.status == 200 ? resp.json() : null);
-}
-async function fetchVacancies(text, count, includeDescription = false) {
+async function fetchVacancies(text, count) {
     let url = `${getApiHost()}/vacancies?`;
     url = `${url}count=${count}`;
-    url = `${url}&includeDescription=${includeDescription}`;
     if (text) url = `${url}&vacancyTitle=${encodeURIComponent(text)}`;
     return fetch(url, {
         method: 'GET',
@@ -60,15 +63,8 @@ async function fetchVacancies(text, count, includeDescription = false) {
     }).then(resp => resp.json());
 }
 
-async function fetchSteps(stepSystemId, relation) {
-    return fetch(`${getApiHost()}/step-systems/${stepSystemId}?relation=${relation}`, {
-        method: 'GET',
-        headers: getHeaders()
-    }).then(resp => resp.json());
-}
-
-async function doesCvAlreadyAttachedToVacancy(cvId, vacancyId) {
-    return fetch(`${getApiHost()}/cvs/${cvId}/vacancy/${vacancyId}`, {
+async function fetchVacancySteps(vacancyId) {
+    return fetch(`${getApiHost()}/vacancies/${vacancyId}/steps`, {
         method: 'GET',
         headers: getHeaders()
     }).then(resp => resp.json());
