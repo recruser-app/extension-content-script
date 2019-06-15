@@ -1,3 +1,5 @@
+let mainContainer = document.getElementById('recruser-save-cv-block');
+
 let recruserSaveBlock = document.getElementById('saveCv-step');
 
 let recruserAddExistingCvToVacancyBtn = document.getElementById('recruser-found-add-candidate-anyway');
@@ -5,8 +7,6 @@ let recruserAddExistingCvToVacancyBtn = document.getElementById('recruser-found-
 let recruserSelectVacancyBlock = document.getElementById('recruser-selectVacancy-step');
 let recruserSelectVacancyAutocomplete = document.getElementById('recruser-selectVacancy-autocomplete');
 let recruserSelectVacancyNextStep = document.getElementById('recruser-selectVacancy-next-step');
-let selectVacancyValidationEl = document.getElementById('recruser-selectVacancy-validation');
-let recruserFoundCandidateValidationEl = document.getElementById('recruser-found-candidate');
 
 let recruserSelectStepBlock = document.getElementById('recruser-selectStep-step');
 let recruserSelectStepAutocomplete = document.getElementById('recruser-selectStep-autocomplete');
@@ -70,6 +70,8 @@ async function setupParseCvStep() {
         };
     } else {
         document.getElementById('recruser-similar-block').style.display = 'block';
+        setupCvViewerBlock(similarCvs, showSelectBtn = true, isShown = false);
+
         document.getElementById('recruser-select-found-cv-btn').onclick = (e) => {
             e.preventDefault();
             toggleCvViewer(isShown = false);
@@ -81,8 +83,6 @@ async function setupParseCvStep() {
             setStep(window.RecruserSelectVacancyStep);
             window.recruserCvId = await parseAndSaveCv();
         };
-        setCvViewerToggling();
-        setCvViewer(similarCvs);
     }
 }
 
@@ -96,8 +96,9 @@ async function SetupSelectVacancyStep() {
     autocomplete.evaluate();
 
     recruserSelectVacancyAutocomplete.oninput = async () => {
-        selectVacancyValidationEl.style.display = 'none';
-        recruserFoundCandidateValidationEl.style.display = 'none';
+        document.getElementById('recruser-vacancy-not-found').style.display = 'none';
+        document.getElementById('recruser-found-candidate').style.display = 'none';
+        toggleCvViewer(isShown=false);
 
         let input = recruserSelectVacancyAutocomplete.value;
         await setAutocompleteVacancyListByInput(autocomplete, input, maxItems);
@@ -141,30 +142,29 @@ async function trySelectVacancy() {
     if (matchedVacancy) {
         let similarCvsInVacancy = await getSimilarCvsInVacancy(matchedVacancy.id);
         if (similarCvsInVacancy.length == 0) {
-            window.recruserLastVacancy = matchedVacancy;
-            setStep(window.RecruserSelectStepStep);
-            window.recruserCandidateId = await saveCandidate(window.recruserCvId, matchedVacancy.id);
+            await addCandidateAndMoveToNextStep(matchedVacancy);
         } else {
-            recruserFoundCandidateValidationEl.style.display = 'block';
+            document.getElementById('recruser-found-candidate').style.display = 'block';
+            setupCvViewerBlock(similarCvsInVacancy, showSelectBtn = false, isShown = true);
 
-            document.getElementById('recruser-similar-block').style.display = 'block';
-            setCvViewerToggling();
-            setCvViewer(similarCvsInVacancy, showSelectBtn = false);
-            toggleCvViewer(isShown = true);
-
-            document.getElementById('recruser-found-add-candidate-anyway').onclick = (e) => {
+            document.getElementById('recruser-found-add-candidate-anyway').onclick = async (e) => {
                 e.preventDefault();
+                await addCandidateAndMoveToNextStep(matchedVacancy);
                 toggleCvViewer(isShown = false);
-                window.recruserCvId = similarCvs[getCurrentCvIndex()].id;
-                setStep(window.RecruserSelectVacancyStep);
             };
         }
     }
     else {
-        selectVacancyValidationEl.style.display = 'block';
-        selectVacancyValidationEl.innerText = 'No such vacancy';
+        document.getElementById('recruser-vacancy-not-found').style.display = 'block';
     }
 }
+
+async function addCandidateAndMoveToNextStep(matchedVacancy) {
+    window.recruserLastVacancy = matchedVacancy;
+    setStep(window.RecruserSelectStepStep);
+    window.recruserCandidateId = await saveCandidate(window.recruserCvId, matchedVacancy.id);
+}
+
 function getFormattedVacancyName(vac) {
     return `${vac.title} (${vac.companyName})`;
 }
@@ -235,70 +235,60 @@ function setupDoneStep() {
     recruserDoneBlock.style.display = 'block';
 }
 
-
-function setCvViewerToggling() {
-    document.getElementById('recruser-show-cv-viewer-block-btn1').onclick = () => {
-        setCvViewerVisibility(isShown = true);
-    };
-
-    let showCvViewBlockBtn = document.getElementById('recruser-show-cv-viewer-block-btn2');
-    showCvViewBlockBtn.onclick = () => {
-        setCvViewerVisibility(isShown = true);
-    };
-
-    let hideCvViewBlockBtn = document.getElementById('recruser-hide-cv-viewer-block-btn');
-    hideCvViewBlockBtn.onclick = () => {
-        setCvViewerVisibility(isShown = false);
-    };
-
-    function setCvViewerVisibility(isShown) {
-        showCvViewBlockBtn.style.display = isShown ? 'none' : 'inline';
-        hideCvViewBlockBtn.style.display = isShown ? 'inline' : 'none';
-        toggleCvViewer(isShown = isShown);
-    }
-
-    setCvViewerVisibility(isShown = true);
+let cvViewerBlock = document.getElementById('recruser-cv-viewer');
+function setupCvViewerBlock(similarCvsInVacancy, showSelectBtn, isShown) {
+    if(cvViewerBlock) cvViewerBlock.remove();
+    mainContainer.append(cvViewerBlock);
+    
+    setCvViewerToggling();
+    fillDataIntoCvViewer(similarCvsInVacancy, showSelectBtn);
+    toggleCvViewer(isShown);
 }
-
-
-function setCvViewer(cvList, showSelectBtn = true) {
-    console.log(showSelectBtn);
+function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
     document.getElementById('recruser-select-found-cv-btn').style.display = showSelectBtn ? 'block' : 'none';
 
     window.recruserSimilarCvs = cvList;
     document.getElementById('recruser-cv-total').textContent = cvList.length;
     document.getElementById('recruser-cv-current').textContent = getCurrentCvIndex() + 1;
 
-    let openCv = window.recruserSimilarCvs[getCurrentCvIndex()];
-    console.log(openCv);
-    if (openCv.photoUrl)
-        document.getElementById('recruser-cv-photo').setAttribute('src', openCv.photoUrl);
-    document.getElementById('recruser-cv-name').textContent = openCv.fullName;
-    document.getElementById('recruser-cv-position').textContent = openCv.position;
-    if (openCv.birthDate) {
-        let age = new Date().getFullYear() - new Date(openCv.birthDate).getFullYear();
+    let currentCv = window.recruserSimilarCvs[getCurrentCvIndex()];
+    console.log(currentCv);
+    if (currentCv.photoUrl)
+        document.getElementById('recruser-cv-photo').setAttribute('src', currentCv.photoUrl);
+    document.getElementById('recruser-cv-name').textContent = currentCv.fullName;
+    document.getElementById('recruser-cv-position').textContent = currentCv.position;
+    if (currentCv.birthDate) {
+        let age = new Date().getFullYear() - new Date(currentCv.birthDate).getFullYear();
         document.getElementById('recruser-cv-age').textContent = `Age: ${age} years`;
     }
-    if (openCv.sourceUrls) {
+    if (currentCv.sourceUrls) {
         let html = '';
-        openCv.sourceUrls.forEach(url => {
+        currentCv.sourceUrls.forEach(url => {
             html += `<br>${getSiteUrlMarkup(url)}`;
         });
         document.getElementById('recruser-cv-sources').innerHTML = `Sources: ${html}`;
     }
-    if (openCv.contacts) {
+    if (currentCv.lastTransaction) {
+        document.getElementById('recruser-cv-last-action').innerHTML = `
+        Last action made <b>${currentCv.lastTransaction.madeTimeAgo}</b>
+        by <b>${getRecruiterName(currentCv)}</b> in vacancy <b>"${currentCv.lastTransaction.vacancyTitle}"</b> 
+        (${currentCv.lastTransaction.companyName})
+        `;
+    }
+    if (currentCv.contacts) {
         let html = '';
-        openCv.contacts.forEach(contact => {
+        currentCv.contacts.forEach((contact, index) => {
+            if (index > 0) html += '<br>';
             if (contact.type == 4)
-                html += `<br>${getContactNameForType(contact.type)}: ${getSiteUrlMarkup(contact.value)}`;
+                html += `${getContactNameForType(contact.type)}: ${getSiteUrlMarkup(contact.value)}`;
             else
-                html += `<br>${getContactNameForType(contact.type)}: ${contact.value}`;
+                html += `${getContactNameForType(contact.type)}: ${contact.value}`;
         });
         document.getElementById('recruser-cv-contacts').innerHTML = html;
     }
-    if (openCv.experiences) {
+    if (currentCv.experiences) {
         let html = '';
-        openCv.experiences.forEach((exp, index, items) => {
+        currentCv.experiences.forEach((exp, index, items) => {
             html += `
             <div class="recruser-cv-experience-item">
                 <div>
@@ -318,12 +308,18 @@ function setCvViewer(cvList, showSelectBtn = true) {
 
     document.getElementById('recruser-cv-viewer-next').onclick = () => {
         updateCurrentCvIndex(delta = 1, cvList.length);
-        setCvViewer(cvList);
+        fillDataIntoCvViewer(cvList);
     };
     document.getElementById('recruser-cv-viewer-prev').onclick = () => {
         updateCurrentCvIndex(delta = -1, cvList.length);
-        setCvViewer(cvList);
+        fillDataIntoCvViewer(cvList);
     };
+}
+
+function getRecruiterName(openCv) {
+    if (getUserName() == openCv.lastTransaction.recruiterName)
+        return 'you';
+    return openCv.lastTransaction.recruiterName;
 }
 
 function formatDate(dateStr) {
@@ -358,7 +354,28 @@ function updateCurrentCvIndex(delta, total) {
         return;
     window.recruserCurrentCvIndex = newValue;
 }
+
+
+let showCvViewBlockBtn = document.getElementById('recruser-show-cv-viewer-block-btn2');
+let hideCvViewBlockBtn = document.getElementById('recruser-hide-cv-viewer-block-btn');
+function setCvViewerToggling() {
+    document.getElementById('recruser-show-cv-viewer-block-btn1').onclick = () => {
+        setCvViewerVisibility(isShown = true);
+    };
+
+    showCvViewBlockBtn.onclick = () => {
+        setCvViewerVisibility(isShown = true);
+    };
+
+    hideCvViewBlockBtn.onclick = () => {
+        setCvViewerVisibility(isShown = false);
+    };
+}
+function setCvViewerVisibility(isShown) {
+    showCvViewBlockBtn.style.display = isShown ? 'none' : 'inline';
+    hideCvViewBlockBtn.style.display = isShown ? 'inline' : 'none';
+    toggleCvViewer(isShown);
+}
 function toggleCvViewer(isShown) {
-    let cvViewBlock = document.getElementById('recruser-cv-viewer');
-    cvViewBlock.style.display = isShown ? 'block' : 'none';
+    cvViewerBlock.style.display = isShown ? 'block' : 'none';
 }

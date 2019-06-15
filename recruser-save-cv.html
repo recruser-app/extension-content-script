@@ -50,7 +50,9 @@
             <input placeholder="Type vacancy or leave empty" id="recruser-selectVacancy-autocomplete" />
             <span id="recruser-selectVacancy-next-step" title="Next step"
                 class="recruser-next-step fake-styled-href"></span>
-            <div style="display:none" id="recruser-selectVacancy-validation" class="recruser recruser-validation"></div>
+            <div style="display:none" id="recruser-vacancy-not-found" class="recruser recruser-validation">
+                No such vacancy
+            </div>
             <div style="display:none" id="recruser-found-candidate" class="recruser recruser-validation">
                 <span>We found similar CV's in vacancy.</span>
                 <span class="fake-styled-href" id="recruser-found-add-candidate-anyway"> Add anyway</span>
@@ -91,6 +93,9 @@
                         <div id="recruser-cv-age"></div>
                         <div id="recruser-cv-sources"></div>
                     </div>
+                </div>
+                <div class="recruser-cv-section recruser-cv-last-action">
+                    <span id="recruser-cv-last-action"></span>
                 </div>
                 <div class="recruser-cv-section">
                     <b>Contacts:</b>

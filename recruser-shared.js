@@ -10,6 +10,11 @@ function getUserToken() {
     if (!data) return '';
     return data.token;
 }
+function getUserName() {
+    let data = getFromLocalStorage('recruserUser');
+    if (!data) return '';
+    return data.name;
+}
 
 function getApiHost() {
     return 'http://localhost:57492';

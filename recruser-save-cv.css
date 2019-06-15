@@ -109,6 +109,14 @@
     grid-template-columns: 2fr 1fr;
 }
 
+.recruser-cv-last-action {
+    min-height: 20px;
+    padding: 5px 0;
+    font-style: oblique;
+    color: darkgray;
+    font-size: 14px;
+}
+
 .light-hr {
     border: 0.5px solid lightgrey;
 }

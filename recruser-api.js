@@ -10,7 +10,7 @@ async function getSimilarCvsInRecruiterDb() {
     }).then(resp => resp.json());
 }
 async function getSimilarCvsInVacancy(vacancyId) {
-    return await fetch(`${getApiHost()}/cvs/similar/vacancy/${vacancyId}`, {
+    return await fetch(`${getApiHost()}/cvs/similar?vacancyId=${vacancyId}`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({
