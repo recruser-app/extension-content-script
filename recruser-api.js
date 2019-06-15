@@ -62,6 +62,12 @@ async function fetchVacancies(text, count) {
         headers: getHeaders()
     }).then(resp => resp.json());
 }
+async function fetchVacancyById(vacancyId) {
+    return fetch(`${getApiHost()}/vacancies/${vacancyId}`, {
+        method: 'GET',
+        headers: getHeaders()
+    }).then(resp => resp.json());
+}
 
 async function fetchVacancySteps(vacancyId) {
     return fetch(`${getApiHost()}/vacancies/${vacancyId}/steps`, {

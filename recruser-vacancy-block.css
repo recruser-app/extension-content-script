@@ -20,11 +20,27 @@
     font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif !important;
 }
 .recruser-vacancy-block-opened {
-    overflow-y: auto !important;
-    resize: vertical !important;
-    min-height: 25%;
-    height: 65%;
     width: 27%;
+    min-height: 30%;
+    overflow-y: hidden;
+    resize: vertical !important;
+}
+
+.recruser-block-vacancy-description-block {
+    overflow-y: auto !important;
+    position: absolute;
+    top: 80px;
+    bottom: 25px;
+    padding-right: 10px;
+    font-style: italic;
+}
+.recruser-vacancy-block-resize {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    z-index: -1;
+    width: 23px;
+    height: 23px;
 }
 
 .recruser-vacancy-block-closed {
@@ -130,4 +146,10 @@
     width: var(--recruser-icon-size);
     height: var(--recruser-icon-size);
     margin: -10px -5px 0 -10px;
+}
+
+.recruser-vacancy-not-found-alert {
+    display: block;
+    font-style: italic;
+    margin: 5px;
 }

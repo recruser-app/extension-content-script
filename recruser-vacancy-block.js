@@ -1,7 +1,7 @@
 let recruserVacancyOpenedBlock = document.getElementById('recruser-vacancy-opened');
 let recruserVacancyClosedBlock = document.getElementById('recruser-vacancy-closed');
 let recruserShowBtn = document.getElementById('recruser-set-block-vacancy-show-btn');
-let recruserHideBtn = document.getElementById('recruser-set-block-vacancy-hide-btn');
+let recruserHideBtns = document.getElementsByClassName('recruser-hide');
 
 let recruserSetBlockVacancyViewBlock = document.getElementById('recruser-set-block-vacancy-view');
 let recruserSetBlockVacancyEditBlock = document.getElementById('recruser-set-block-vacancy-edit');
@@ -13,7 +13,7 @@ let recruserSetVlockVacancySubmitBtn = document.getElementById('recruser-set-blo
 let recruserSetBlockVacancyValidation = document.getElementById('recruser-set-block-vacancy-validation');
 
 let recruserBlockVacancyTitle = document.getElementById('recruser-block-vacancy-title');
-let recruserBlockVacancyDescription = document.getElementById('recruser-block-vacancy-description');
+let recruserBlockVacancyDescription = document.getElementById('recruser-block-vacancy-description-content');
 
 (async () => {
     let isVacancyBlockVisible = await getBlockVacancyVisibility();
@@ -29,11 +29,13 @@ recruserShowBtn.onclick = async (e) => {
     showVacancyBlock();
     setBlockVacancyVisibility(true);
 }
-recruserHideBtn.onclick = async (e) => {
-    e.preventDefault();
-    hideVacancyBlock();
-    setBlockVacancyVisibility(false);
-}
+Array.from(recruserHideBtns).forEach(btn => {
+    btn.onclick = async (e) => {
+        e.preventDefault();
+        hideVacancyBlock();
+        setBlockVacancyVisibility(false);
+    }
+})
 
 recruserSetBlockVacancyEditBtn.onclick = (e) => {
     e.preventDefault();
@@ -44,14 +46,18 @@ recruserSetBlockVacancyExitBtn.onclick = (e) => {
     setVacancyViewMode();
 }
 
-let autocomplete = new Awesomplete(recruserSetBlockVacancyAutocomplete, {
-    minChars: 1, maxItems: 3, sort: false
-});
-recruserSetBlockVacancyAutocomplete.oninput = async () => {
-    let input = recruserSetBlockVacancyAutocomplete.value;
-    autocomplete.list = (await fetchVacancies(input)).map(v => v.title);
-    recruserSetBlockVacancyValidation.style.display = 'none';
+async function setAutocompleteVacancyListByInput(autocomplete, input, maxItems) {
+    let foundVacancies = await fetchVacancies(input, maxItems);
+    window.recruserAutocompleteVacancyList = foundVacancies;
+    autocomplete.list = (window.recruserAutocompleteVacancyList).map(v => ({
+        label: getFormattedVacancyName(v),
+        value: v.title
+    }));
 }
+function getFormattedVacancyName(vac) {
+    return `${vac.title} (${vac.companyName})`;
+}
+
 recruserSetVlockVacancySubmitBtn.onclick = async (e) => {
     e.preventDefault();
     await trySetVacancy();
@@ -71,9 +77,10 @@ new ResizeObserver(async () => {
 async function showVacancyBlock() {
     let blockVacancy = await getBlockVacancy();
     if (blockVacancy) {
+        recruserVacancyOpenedBlock.style.height = `${blockVacancy.bLockHeight}px`;
         setVacancyBlockText(blockVacancy);
     } else {
-        setVacancyEditMode(showExitBtn = false);
+        await setVacancyEditMode(showExitBtn = false);
     }
     recruserVacancyOpenedBlock.style.display = 'block';
     recruserVacancyClosedBlock.style.display = 'none';
@@ -86,9 +93,12 @@ async function hideVacancyBlock() {
 
 async function trySetVacancy() {
     let input = recruserSetBlockVacancyAutocomplete.value;
-    let matchedVacancy = await getMatchedVacancyFor(input);
+    console.log('input', input)
+    console.log('window.recruserAutocompleteVacancyList', window.recruserAutocompleteVacancyList)
+    let matchedVacancy = window.recruserAutocompleteVacancyList.find(v => v.title.toLowerCase() == input.toLowerCase());
     if (matchedVacancy) {
-        setVacancyBlockText(matchedVacancy);
+        let fullVacancyInfo = await fetchVacancyById(matchedVacancy.id);
+        setVacancyBlockText(fullVacancyInfo);
         setVacancyViewMode();
         setBlockVacancy(matchedVacancy.id);
     }
@@ -98,18 +108,36 @@ async function trySetVacancy() {
     }
 }
 
-function setVacancyBlockText(vacancy) {
-    recruserVacancyOpenedBlock.style.height = `${vacancy.bLockHeight}px`;
+async function setVacancyBlockText(vacancy) {
+    recruserBlockVacancyTitle.innerHTML = formatVacancyTitle(vacancy);
+    recruserBlockVacancyDescription.innerHTML = vacancy.description;
+}
 
-    recruserBlockVacancyTitle.textContent = vacancy ? `${vacancy.title} (${vacancy.companyName})` : '';
-    recruserBlockVacancyDescription.innerHTML = vacancy ? vacancy.description : '';
+function formatVacancyTitle(vacancy) {
+    const maxLength = 30;
+    let vacancyTitle = vacancy.title.length > maxLength ? `${vacancy.title.substr(0, maxLength)}...` : vacancy.title;
+    let companyName = vacancy.companyName.length > maxLength ? `${vacancy.companyName.substr(0, maxLength)}...` : vacancy.companyName;
+    return `<span title='${vacancy.title}'>${vacancyTitle}</span> 
+            <br>
+            <span title='${vacancy.companyName}'>(${companyName})</span>`;
+}
+
+function newFunction(vacancy) {
+    return vacancy.title;
 }
 
 function setVacancyViewMode() {
+    Array.from(recruserHideBtns).forEach(btn => {
+        btn.style.display = 'inline-block';
+    });
     recruserSetBlockVacancyEditBlock.style.display = 'none';
     recruserSetBlockVacancyViewBlock.style.display = 'block';
 }
-function setVacancyEditMode(showExitBtn = true) {
+async function setVacancyEditMode(showExitBtn = true) {
+    setupAutocomplete();
+    Array.from(recruserHideBtns).forEach(btn => {
+        btn.style.display = 'none';
+    });
     recruserSetBlockVacancyEditBlock.style.display = 'block';
     recruserSetBlockVacancyViewBlock.style.display = 'none';
     if (showExitBtn) {
@@ -119,3 +147,18 @@ function setVacancyEditMode(showExitBtn = true) {
     }
 }
 
+async function setupAutocomplete() {
+    recruserSetBlockVacancyAutocomplete.value = '';
+    let maxAutocompleteItems = 3
+    let autocomplete = new Awesomplete(recruserSetBlockVacancyAutocomplete, {
+        minChars: 0, maxItems: maxAutocompleteItems, sort: false
+    });
+    await setAutocompleteVacancyListByInput(autocomplete, null, maxAutocompleteItems);
+    autocomplete.evaluate();
+
+    recruserSetBlockVacancyAutocomplete.oninput = async () => {
+        let input = recruserSetBlockVacancyAutocomplete.value;
+        await setAutocompleteVacancyListByInput(autocomplete, input, maxAutocompleteItems);
+        recruserSetBlockVacancyValidation.style.display = 'none';
+    }
+}

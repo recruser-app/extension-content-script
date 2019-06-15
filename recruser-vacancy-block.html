@@ -33,25 +33,35 @@
                             href="#"></a>
                     </div>
                     <div>
-                        <a id="recruser-set-block-vacancy-hide-btn" title="Hide vacancy" class="recruser-hide"
-                            href="#"></a>
+                        <span title="Hide vacancy" class="recruser-hide fake-styled-href" href="#"></span>
                     </div>
                 </div>
             </div>
             <div style="display:none" id="recruser-set-block-vacancy-edit" class="recruser recruser-autocomplete">
                 <input placeholder="Type vacancy name" id="recruser-set-block-vacancy-autocomplete" />
-                <a id="recruser-set-block-vacancy-submit" title="Set" class="recruser-finish" href="#"></a>
-                <a style="float:right" id="recruser-set-block-vacancy-exit-btn" title="Change vacancy"
-                    class="recruser-exit" href="#"></a>
+                <span id="recruser-set-block-vacancy-submit" title="Select vacancy"
+                    class="recruser-finish fake-styled-href"></span>
+                <span style="float:right" id="recruser-set-block-vacancy-exit-btn" title="Change vacancy"
+                    class="recruser-exit fake-styled-href"></span>
                 <div style="display:none" id="recruser-set-block-vacancy-validation"
-                    class="recruser recruser-validation">
+                    class="recruser recruser-vacancy-not-found-alert">
                 </div>
+                <span style="float: right; margin: 15px 25px;" title="Hide vacancy"
+                    class="recruser-hide fake-styled-href"></span>
             </div>
             <hr>
-            <div id="recruser-block-vacancy-description" class="recruser-block-vacancy-description"></div>
+            <div class="recruser-block-vacancy-description-block">
+                <div id="recruser-block-vacancy-description-content">
+                    <p>You have no vacancies to select yet :(</p>
+                    <p> Once you created or invited to vacancy, you can choose it
+                        here. After that, job description will always be on your mind!
+                    </p>
+                    <p><b>You can go to extension and create vacancy there.</b></p>
+                </div>
+            </div>
+            <img class="recruser-vacancy-block-resize" src="assets/images/resize-botton-right.png" />
         </div>
     </div>
-
     <script src="recruser-vacancy-block.js"></script>
 </body>
 

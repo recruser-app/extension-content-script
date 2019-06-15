@@ -128,6 +128,9 @@ function isVacancyAvailable(vacancy) {
     let isVacancyOnHold = vacancy.status == 2;
     return isVacancyActive || isVacancyOnHold;
 }
+function getFormattedVacancyName(vac) {
+    return `${vac.title} (${vac.companyName})`;
+}
 
 async function trySelectVacancy() {
     if (!window.recruserCvId) return;
@@ -165,9 +168,6 @@ async function addCandidateAndMoveToNextStep(matchedVacancy) {
     window.recruserCandidateId = await saveCandidate(window.recruserCvId, matchedVacancy.id);
 }
 
-function getFormattedVacancyName(vac) {
-    return `${vac.title} (${vac.companyName})`;
-}
 
 async function setupSelectStepStep() {
     if (!window.recruserLastVacancy.hasSteps) {
