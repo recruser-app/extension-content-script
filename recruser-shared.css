@@ -61,7 +61,7 @@
     font-weight: bold  !important;
 }
 
-.fake-styled-href {
+.recruser-fake-styled-href {
     cursor: pointer;
     color: var(--recruser-color) !important;
     text-decoration: none !important;
