@@ -273,14 +273,14 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
         <b>${getRecruiterName(currentCv)}</b> 
         ${constructStepText(currentCv.lastTransaction.newStepTitle)} 
         <b>${currentCv.lastTransaction.madeTimeAgo}</b> 
-        in vacancy <b>"${currentCv.lastTransaction.vacancyTitle}"</b> 
+        in vacancy <b>"${formatVacancyTitle(currentCv.lastTransaction.vacancyTitle)}"</b> 
         (${currentCv.lastTransaction.companyName})
         `;
     }
     if (currentCv.contacts) {
-        let html = '';
+        let html = 'Contacts: ';
         currentCv.contacts.forEach((contact, index) => {
-            if (index > 0) html += '<br>';
+            if (index > 0) html += ', ';
             if (contact.type == 4)
                 html += `${getContactNameForType(contact.type)}: ${getSiteUrlMarkup(contact.value)}`;
             else
@@ -317,6 +317,11 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
         fillDataIntoCvViewer(cvList);
     };
 }
+function formatVacancyTitle(vacancyTitle) {
+    const maxLength = 30;
+    return vacancyTitle.length > maxLength ? `${vacancyTitle.substr(0, maxLength)}...` : vacancyTitle;
+}
+
 function constructStepText(stepTitle) {
     return stepTitle ? `moved this candidate to "<b>${stepTitle}</b>" step` : 'added this candidate';
 }
