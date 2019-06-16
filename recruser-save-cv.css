@@ -19,7 +19,7 @@
     color: var(--recruser-color) !important;
     border: 1px solid var(--recruser-color) !important;
     border-radius: 5px !important;
-    width: 300px !important;
+    width: 350px !important;
     text-align: center !important;
     padding: 3px 5px !important;
     color: var(--recruser-color) !important;
@@ -76,7 +76,7 @@
     position: absolute !important;
     border: 1px solid var(--recruser-color);
     border-radius: 5px;
-    width: 300px;
+    width: 350px;
     padding: 5px;
     color: grey;
     background-color: white;
@@ -119,4 +119,17 @@
 
 .light-hr {
     border: 0.5px solid lightgrey;
+}
+
+.recruser-validation {
+    background-color: #fff2d5 !important;
+    font-size: 15px;
+    color: var(--recruser-color) !important;
+    border: 1px solid #f6bf45 !important;
+    border-radius: 5px !important;
+    width: 360px !important;
+    text-align: center !important;
+    padding: 3px 0 !important;
+    color: grey !important;
+    margin: 3px 0;
 }

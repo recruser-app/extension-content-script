@@ -40,7 +40,7 @@
 .recruser input {
     border: 1px solid var(--recruser-color) !important;
     padding: 5px !important;
-    width: 270px !important;
+    width: 320px !important;
     margin: 3px 0;
 }
 .recruser-autocomplete input:focus {
@@ -59,19 +59,6 @@
     color: var(--recruser-color) !important;
     text-decoration: none !important;
     font-weight: bold  !important;
-}
-
-.recruser-validation {
-    background-color: #fff2d5 !important;
-    font-size: 15px;
-    color: var(--recruser-color) !important;
-    border: 1px solid #f6bf45 !important;
-    border-radius: 5px !important;
-    width: 310px !important;
-    text-align: center !important;
-    padding: 3px 0 !important;
-    color: grey !important;
-    margin: 3px 0;
 }
 
 .fake-styled-href {
