@@ -262,11 +262,12 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
         document.getElementById('recruser-cv-age').textContent = `Age: ${age} years`;
     }
     if (currentCv.sourceUrls) {
-        let html = '';
-        currentCv.sourceUrls.forEach(url => {
-            html += `<br>${getSiteUrlMarkup(url)}`;
+        let html = 'Sources: ';
+        currentCv.sourceUrls.forEach((url, index) => {
+            if (index > 1) html += ', '
+            html += `${getSiteUrlMarkup(url)}`;
         });
-        document.getElementById('recruser-cv-sources').innerHTML = `Sources: ${html}`;
+        document.getElementById('recruser-cv-sources').innerHTML = html;
     }
     if (currentCv.lastTransaction) {
         document.getElementById('recruser-cv-last-action').innerHTML = `
@@ -278,9 +279,8 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
         `;
     }
     if (currentCv.contacts) {
-        let html = '';
+        let html = '<b>Contacts: </b>';
         if (currentCv.contacts.length) {
-             html += '<b>Contacts</b>: ';
             currentCv.contacts.forEach((contact, index) => {
                 if (index > 0) html += ', ';
                 if (contact.type == 4)
@@ -289,7 +289,7 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
                     html += `${getContactNameForType(contact.type)}: ${contact.value}`;
             });
         } else {
-            html += '<i>No contacts</i>';
+            html += '<i>no contacts</i>';
         }
         document.getElementById('recruser-cv-contacts').innerHTML = html;
     }
