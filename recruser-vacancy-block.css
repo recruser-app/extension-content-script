@@ -39,8 +39,9 @@
     bottom: 3px;
     right: 3px;
     z-index: -1;
-    width: 23px;
-    height: 23px;
+    width: 20px;
+    height: 20px;
+    content: url(assets/images/resize-botton-right.png)
 }
 
 .recruser-vacancy-block-closed {
