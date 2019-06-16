@@ -30,6 +30,10 @@
     border-bottom: 1px solid white !important;
     height: calc(80px - 10px) !important;
 }
+.recruser-set-block-vacancy-header-content-container {
+    display: grid; 
+    grid-template-columns: 7fr 1fr 1fr;
+}
 .recruser-block-vacancy-description-block {
     overflow-y: auto !important;
     position: absolute !important;
