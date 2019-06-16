@@ -270,8 +270,10 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
     }
     if (currentCv.lastTransaction) {
         document.getElementById('recruser-cv-last-action').innerHTML = `
-        Last action made <b>${currentCv.lastTransaction.madeTimeAgo}</b>
-        by <b>${getRecruiterName(currentCv)}</b> in vacancy <b>"${currentCv.lastTransaction.vacancyTitle}"</b> 
+        <b>${getRecruiterName(currentCv)}</b> 
+        ${constructStepText(currentCv.lastTransaction.newStepTitle)} 
+        <b>${currentCv.lastTransaction.madeTimeAgo}</b> 
+        in vacancy <b>"${currentCv.lastTransaction.vacancyTitle}"</b> 
         (${currentCv.lastTransaction.companyName})
         `;
     }
@@ -315,13 +317,14 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
         fillDataIntoCvViewer(cvList);
     };
 }
-
+function constructStepText(stepTitle) {
+    return stepTitle ? `moved this candidate to "<b>${stepTitle}</b>" step` : 'added this candidate';
+}
 function getRecruiterName(openCv) {
     if (getUserName() == openCv.lastTransaction.recruiterName)
-        return 'you';
+        return 'You';
     return openCv.lastTransaction.recruiterName;
 }
-
 function formatDate(dateStr) {
     let date = new Date(dateStr);
 
