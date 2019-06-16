@@ -3,7 +3,7 @@
 }
 
 .recruser div, span {
-    vertical-align: unset !important;
+    vertical-align: text-bottom !important;
 }
 
 .recruser-theme-btn {
