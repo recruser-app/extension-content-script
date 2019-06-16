@@ -43,7 +43,8 @@
     padding-right: 10px !important;
     font-style: italic !important;
 }
-.recruser-block-vacancy-description-block a {
+.recruser-block-vacancy-description-block * {
+    margin: 0.5rem 0 !important;
     color: white !important;
 }
 .recruser-vacancy-block-resize {
