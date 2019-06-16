@@ -81,7 +81,7 @@ function getVacancyBlockHeightInPercentage() {
         return percentage;
     } else {
         let pixels = Number.parseInt(recruserVacancyOpenedBlock.style.height);
-        let percentage = Math.ceil(pixels / window.screen.height * 100);
+        let percentage = Math.ceil(pixels / window.innerHeight * 100);
         return percentage;
     }
 }
