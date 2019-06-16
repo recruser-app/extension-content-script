@@ -107,6 +107,7 @@
 .recruser-cv-experience-item {
     display: grid !important; 
     grid-template-columns: 2fr 1fr !important;
+    margin: 5px 0 !important;
 }
 
 .recruser-cv-last-action {
