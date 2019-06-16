@@ -89,7 +89,7 @@ async function setLastSelectedVacancy(vacancyId) {
     });
 }
 
-async function getBlockVacancy() {
+async function getBlockVacancyInfo() {
     return await fetch(`${getApiHost()}/settings/recruiter/block-vacancy`, {
         method: 'GET',
         headers: getHeaders()
@@ -117,7 +117,7 @@ async function setBlockVacancyVisibility(isVisible) {
 
 async function setBlockVacancyHeight(height) {
     if (height) {
-        return await fetch(`${getApiHost()}/settings/recruiter/block-vacancy-height/${Number.parseInt(height)}`, {
+        return await fetch(`${getApiHost()}/settings/recruiter/block-vacancy-height/${height}`, {
             method: 'PUT',
             headers: getHeaders()
         });

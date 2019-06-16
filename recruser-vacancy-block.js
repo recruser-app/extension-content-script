@@ -71,14 +71,27 @@ recruserSetBlockVacancyAutocomplete.addEventListener("keyup", async (e) => {
 
 new ResizeObserver(async () => {
     console.log(recruserVacancyOpenedBlock.style.height);
-    setBlockVacancyHeight(recruserVacancyOpenedBlock.style.height)
+    let heightInPercentage = getVacancyBlockHeightInPercentage();
+    setBlockVacancyHeight(heightInPercentage);
 }).observe(recruserVacancyOpenedBlock);
 
+function getVacancyBlockHeightInPercentage() {
+    if (recruserVacancyOpenedBlock.style.height.includes('%')) {
+        let percentage = Number.parseInt(recruserVacancyOpenedBlock.style.height);
+        return percentage;
+    } else {
+        let pixels = Number.parseInt(recruserVacancyOpenedBlock.style.height);
+        let percentage = Math.ceil(pixels / window.screen.height * 100);
+        return percentage;
+    }
+}
+
+
 async function showVacancyBlock() {
-    let blockVacancy = await getBlockVacancy();
-    if (blockVacancy) {
-        recruserVacancyOpenedBlock.style.height = `${blockVacancy.bLockHeight}px`;
-        setVacancyBlockText(blockVacancy);
+    let info = await getBlockVacancyInfo();
+    recruserVacancyOpenedBlock.style.height = info.blockHeightInPercentage ? `${info.blockHeightInPercentage}%` : '60%';
+    if (info.vacancy) {
+        setVacancyText(info.vacancy);
     } else {
         await setVacancyEditMode(showExitBtn = false);
     }
@@ -98,7 +111,7 @@ async function trySetVacancy() {
     let matchedVacancy = window.recruserAutocompleteVacancyList.find(v => v.title.toLowerCase() == input.toLowerCase());
     if (matchedVacancy) {
         let fullVacancyInfo = await fetchVacancyById(matchedVacancy.id);
-        setVacancyBlockText(fullVacancyInfo);
+        setVacancyText(fullVacancyInfo);
         setVacancyViewMode();
         setBlockVacancy(matchedVacancy.id);
     }
@@ -107,12 +120,12 @@ async function trySetVacancy() {
         recruserSetBlockVacancyValidation.innerText = 'No such vacancy';
     }
 }
-
-async function setVacancyBlockText(vacancy) {
-    recruserBlockVacancyTitle.innerHTML = formatVacancyTitle(vacancy);
-    recruserBlockVacancyDescription.innerHTML = vacancy.description;
+async function setVacancyText(vacancy) {
+    if (vacancy) {
+        recruserBlockVacancyTitle.innerHTML = formatVacancyTitle(vacancy);
+        recruserBlockVacancyDescription.innerHTML = vacancy.description;
+    }
 }
-
 function formatVacancyTitle(vacancy) {
     const maxLength = 30;
     let vacancyTitle = vacancy.title.length > maxLength ? `${vacancy.title.substr(0, maxLength)}...` : vacancy.title;
