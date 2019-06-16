@@ -43,6 +43,9 @@
     padding-right: 10px !important;
     font-style: italic !important;
 }
+.recruser-block-vacancy-description-block a {
+    color: white !important;
+}
 .recruser-vacancy-block-resize {
     position: absolute !important;
     bottom: 3px !important;

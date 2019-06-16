@@ -66,55 +66,57 @@
 }
 
 .recruser-toggle-cv-viewer-block {
-    border-left: 1px solid var(--recruser-color); 
-    display: inline; 
-    margin: 0 10px; 
-    padding-left: 10px;
+    border-left: 1px solid var(--recruser-color) !important; 
+    display: inline !important; 
+    margin: 0 10px !important; 
+    padding-left: 10px !important;
 }
 
 .recruser-cv-viewer {
     position: absolute !important;
-    border: 1px solid var(--recruser-color);
-    border-radius: 5px;
-    width: 350px;
-    padding: 5px;
-    color: grey;
-    background-color: white;
-    margin-top: 5px;
+    border: 1px solid var(--recruser-color) !important;
+    border-radius: 5px !important;
+    width: 350px !important;
+    padding: 5px !important;
+    color: grey !important;
+    background-color: white !important;
+    margin: 5px !important;
 }
 .recruser-cv-viewer-content {
-    max-height: 300px;
-    overflow-y: auto;
+    max-height: 300px !important;
+    overflow-y: auto !important;
 }
 .recruser-cv-section {
-    padding: 5px 0;
-    border-bottom: 1px solid var(--recruser-color);
+    padding: 5px !important;
+    border-bottom: 1px solid var(--recruser-color) !important;
 }
 .recruser-cv-last-section {
-    padding: 5px 0;
+    padding: 5px !important;
 }
 .recruser-personal-section {
-    display: grid;
-    grid-template-columns: 3fr 6fr
+    display: grid !important;
+    grid-template-columns: 3fr 6fr !important;
+}
+.recruser-personal-section div {
+    margin: 0 3px !important;
 }
 .recruser-cv-viewer-navigation {
-    display: grid;
-    grid-template-columns: 3fr 3fr 3fr 3fr 3fr;
-    text-align: center;
-    user-select: none;
+    display: grid !important;
+    grid-template-columns: 3fr 3fr 3fr 3fr 3fr !important;
+    text-align: center !important;
+    user-select: none !important;
 }
 
 .recruser-cv-experience-item {
-    display: grid; 
-    grid-template-columns: 2fr 1fr;
+    display: grid !important; 
+    grid-template-columns: 2fr 1fr !important;
 }
 
 .recruser-cv-last-action {
-    min-height: 20px;
-    padding: 5px 0;
-    font-style: oblique;
-    color: darkgray;
-    font-size: 14px;
+    min-height: 20px !important;
+    padding: 5px !important;
+    font-style: oblique !important;
+    color: darkgray !important;
 }
 
 .light-hr {

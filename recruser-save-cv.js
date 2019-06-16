@@ -282,7 +282,7 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
         let html = '<b>Contacts: </b>';
         if (currentCv.contacts.length) {
             currentCv.contacts.forEach((contact, index) => {
-                if (index > 0) html += ', ';
+                html += '<br>';
                 if (contact.type == 4)
                     html += `${getContactNameForType(contact.type)}: ${getSiteUrlMarkup(contact.value)}`;
                 else
