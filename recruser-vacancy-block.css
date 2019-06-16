@@ -28,13 +28,12 @@
 
 .recruser-set-block-vacancy-header {
     border-bottom: 1px solid white !important;
-    height: calc(85px - 10px) !important;
+    height: calc(80px - 10px) !important;
 }
-
 .recruser-block-vacancy-description-block {
     overflow-y: auto !important;
     position: absolute !important;
-    top: 85px !important;
+    top: 80px !important;
     bottom: 25px !important;
     padding-top: 10px !important;
     padding-right: 10px !important;
@@ -64,9 +63,16 @@
     margin: 6px 0 !important;
 }
 
+.recruser-set-block-vacancy-edit {
+    display: grid;
+    grid-template-columns: 7fr 2fr 2fr;
+}
+
 .recruser-finish{
-    display:inline-block !important;
-    text-decoration:none !important;
+    display:inline-block;
+    text-decoration:none;
+    width: 25px;
+    text-align: center;
 }
 .recruser-finish:hover:before{
     background-color: #47c2b1 !important;
@@ -80,13 +86,14 @@
     position: absolute;
     width: var(--recruser-icon-size);
     height: var(--recruser-icon-size);
-    margin: -15px 0 0 5px;
+    margin: -10px 5px 0 5px;
 }
 
 .recruser-exit{
     display:inline-block;
     text-decoration:none;
     width: 25px;
+    text-align: center;
 }
 .recruser-exit:hover:before{
     background-color: #47c2b1;
@@ -100,7 +107,7 @@
     position: absolute;
     width: var(--recruser-icon-size);
     height: var(--recruser-icon-size);
-    margin: 5px 0 0 -5px;
+    margin: -10px 5px 0 5px;
 }
 
 .recruser-edit{
@@ -155,7 +162,7 @@
 }
 
 .recruser-vacancy-not-found-alert {
-    display: block !important;
-    font-style: italic !important;
-    margin: 5px !important;
+    display: block;
+    font-style: italic;
+    margin: 5px;
 }

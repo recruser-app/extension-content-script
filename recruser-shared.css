@@ -41,7 +41,8 @@
     border: 1px solid var(--recruser-color) !important;
     padding: 5px !important;
     width: 320px !important;
-    margin: 3px 0;
+    margin: 3px 0 !important;
+    color: grey !important;
 }
 .recruser-autocomplete input:focus {
     outline: none !important;

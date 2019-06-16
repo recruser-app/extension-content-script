@@ -30,25 +30,32 @@
                     <div style="display: grid; grid-template-columns: 7fr 1fr 1fr">
                         <div id="recruser-block-vacancy-title" class="recruser-block-vacancy-title"></div>
                         <div>
-                            <a id="recruser-set-block-vacancy-edit-btn" title="Change vacancy" class="recruser-edit"
-                                href="#"></a>
+                            <span id="recruser-set-block-vacancy-edit-btn" title="Change vacancy"
+                                class="recruser-edit recruser-fake-styled-href"></span>
                         </div>
                         <div>
-                            <span title="Hide vacancy" class="recruser-hide recruser-fake-styled-href" href="#"></span>
+                            <span title="Hide vacancy" class="recruser-hide recruser-fake-styled-href"></span>
                         </div>
                     </div>
                 </div>
-                <div style="display:none" id="recruser-set-block-vacancy-edit" class="recruser recruser-autocomplete">
-                    <input placeholder="Type vacancy name" id="recruser-set-block-vacancy-autocomplete" />
-                    <span id="recruser-set-block-vacancy-submit" title="Select vacancy"
-                        class="recruser-finish recruser-fake-styled-href"></span>
-                    <span style="float:right" id="recruser-set-block-vacancy-exit-btn" title="Change vacancy"
-                        class="recruser-exit recruser-fake-styled-href"></span>
+                <div style="display:none" id="recruser-set-block-vacancy-edit">
+                    <div style="display: grid; grid-template-columns: 7fr 1fr 1fr">
+                        <div class="recruser recruser-autocomplete">
+                            <input placeholder="Type vacancy name" id="recruser-set-block-vacancy-autocomplete" />
+                        </div>
+                        <div>
+                            <span id="recruser-set-block-vacancy-submit" title="Select vacancy"
+                                class="recruser-finish recruser-fake-styled-href"></span>
+                        </div>
+                        <div>
+                            <span id="recruser-set-block-vacancy-exit-btn" title="Change vacancy"
+                                class="recruser-exit recruser-fake-styled-href"></span>
+                            <span title="Hide vacancy" class="recruser-hide recruser-fake-styled-href"></span>
+                        </div>
+                    </div>
                     <div style="display:none" id="recruser-set-block-vacancy-validation"
                         class="recruser recruser-vacancy-not-found-alert">
                     </div>
-                    <span style="float: right; margin: 15px 25px;" title="Hide vacancy"
-                        class="recruser-hide recruser-fake-styled-href"></span>
                 </div>
             </div>
             <div class="recruser-block-vacancy-description-block">

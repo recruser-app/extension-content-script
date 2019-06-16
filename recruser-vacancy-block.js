@@ -138,10 +138,10 @@ async function setVacancyEditMode(showExitBtn = true) {
     Array.from(recruserHideBtns).forEach(btn => {
         btn.style.display = 'none';
     });
-    recruserSetBlockVacancyEditBlock.style.display = 'block';
+    recruserSetBlockVacancyEditBlock.style.display = 'grid';
     recruserSetBlockVacancyViewBlock.style.display = 'none';
     if (showExitBtn) {
-        recruserSetBlockVacancyExitBtn.style.display = 'block';
+        recruserSetBlockVacancyExitBtn.style.display = 'inline-block';
     } else {
         recruserSetBlockVacancyExitBtn.style.display = 'none';
     }
