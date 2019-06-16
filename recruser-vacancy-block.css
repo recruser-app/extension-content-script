@@ -20,52 +20,57 @@
     font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif !important;
 }
 .recruser-vacancy-block-opened {
-    width: 27%;
-    min-height: 30%;
-    overflow-y: hidden;
+    width: 27% !important;
+    min-height: 30% !important;
+    overflow-y: hidden !important;
     resize: vertical !important;
+}
+
+.recruser-set-block-vacancy-header {
+    border-bottom: 1px solid white !important;
+    height: calc(85px - 10px) !important;
 }
 
 .recruser-block-vacancy-description-block {
     overflow-y: auto !important;
-    position: absolute;
-    top: 80px;
-    bottom: 25px;
-    padding-right: 10px;
-    font-style: italic;
+    position: absolute !important;
+    top: 85px !important;
+    bottom: 25px !important;
+    padding-top: 10px !important;
+    padding-right: 10px !important;
+    font-style: italic !important;
 }
 .recruser-vacancy-block-resize {
-    position: absolute;
-    bottom: 3px;
-    right: 3px;
-    z-index: -1;
-    width: 20px;
-    height: 20px;
-    content: url(assets/images/resize-botton-right.png)
+    position: absolute !important;
+    bottom: 3px !important;
+    right: 3px !important;
+    z-index: -1 !important;
+    width: 20px !important;
+    height: 20px !important;
+    content: url(assets/images/resize-botton-right.png) !important
 }
 
 .recruser-vacancy-block-closed {
     /* width: 50px !important;
     height: 60px !important; */
     text-align: center !important;
-
 }
 
 
 .recruser-block-vacancy-title {
     /* display: inline-block; */
-    font-weight: bold;
-    font-size: 20px;
-    margin: 6px 0;
+    font-weight: bold  !important;
+    font-size: 20px !important;
+    margin: 6px 0 !important;
 }
 
 .recruser-finish{
-    display:inline-block;
-    text-decoration:none;
+    display:inline-block !important;
+    text-decoration:none !important;
 }
 .recruser-finish:hover:before{
-    background-color: #47c2b1;
-    border-radius: 50%;
+    background-color: #47c2b1 !important;
+    border-radius: 50% !important;
 }
 .recruser-finish:before{
     content: '';
@@ -150,7 +155,7 @@
 }
 
 .recruser-vacancy-not-found-alert {
-    display: block;
-    font-style: italic;
-    margin: 5px;
+    display: block !important;
+    font-style: italic !important;
+    margin: 5px !important;
 }
