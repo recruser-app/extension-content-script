@@ -54,8 +54,7 @@
 }
 
 .recruser-vacancy-block-closed {
-    /* width: 50px !important;
-    height: 60px !important; */
+    padding: 15px 30px 25px 30px !important;
     text-align: center !important;
 }
 
