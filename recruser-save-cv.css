@@ -2,9 +2,6 @@
 #recruser-save-cv-block {
     font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif !important;
     position: relative !important;
-    width: 312p;
-    /* top: 15% !important; */
-    /* left: 0.5% !important; */
     z-index: 9999 !important;
 }
 
@@ -80,7 +77,7 @@
     padding: 5px !important;
     color: grey !important;
     background-color: white !important;
-    margin: 5px !important;
+    margin: 5px 0 !important;
 }
 .recruser-cv-viewer-content {
     max-height: 300px !important;
