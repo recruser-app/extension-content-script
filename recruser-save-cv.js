@@ -98,7 +98,7 @@ async function SetupSelectVacancyStep() {
     recruserSelectVacancyAutocomplete.oninput = async () => {
         document.getElementById('recruser-vacancy-not-found').style.display = 'none';
         document.getElementById('recruser-found-candidate').style.display = 'none';
-        toggleCvViewer(isShown=false);
+        toggleCvViewer(isShown = false);
 
         let input = recruserSelectVacancyAutocomplete.value;
         await setAutocompleteVacancyListByInput(autocomplete, input, maxItems);
@@ -237,9 +237,9 @@ function setupDoneStep() {
 
 let cvViewerBlock = document.getElementById('recruser-cv-viewer');
 function setupCvViewerBlock(similarCvsInVacancy, showSelectBtn, isShown) {
-    if(cvViewerBlock) cvViewerBlock.remove();
+    if (cvViewerBlock) cvViewerBlock.remove();
     mainContainer.append(cvViewerBlock);
-    
+
     setCvViewerToggling();
     fillDataIntoCvViewer(similarCvsInVacancy, showSelectBtn);
     toggleCvViewer(isShown);
@@ -273,19 +273,24 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
         <b>${getRecruiterName(currentCv)}</b> 
         ${constructStepText(currentCv.lastTransaction.newStepTitle)} 
         <b>${currentCv.lastTransaction.madeTimeAgo}</b> 
-        in vacancy <b>"${formatVacancyTitle(currentCv.lastTransaction.vacancyTitle)}"</b> 
+        in vacancy <b>"${currentCv.lastTransaction.vacancyTitle}"</b> 
         (${currentCv.lastTransaction.companyName})
         `;
     }
     if (currentCv.contacts) {
-        let html = 'Contacts: ';
-        currentCv.contacts.forEach((contact, index) => {
-            if (index > 0) html += ', ';
-            if (contact.type == 4)
-                html += `${getContactNameForType(contact.type)}: ${getSiteUrlMarkup(contact.value)}`;
-            else
-                html += `${getContactNameForType(contact.type)}: ${contact.value}`;
-        });
+        let html = '';
+        if (currentCv.contacts.length) {
+             html += '<b>Contacts</b>: ';
+            currentCv.contacts.forEach((contact, index) => {
+                if (index > 0) html += ', ';
+                if (contact.type == 4)
+                    html += `${getContactNameForType(contact.type)}: ${getSiteUrlMarkup(contact.value)}`;
+                else
+                    html += `${getContactNameForType(contact.type)}: ${contact.value}`;
+            });
+        } else {
+            html += '<i>No contacts</i>';
+        }
         document.getElementById('recruser-cv-contacts').innerHTML = html;
     }
     if (currentCv.experiences) {
@@ -316,10 +321,6 @@ function fillDataIntoCvViewer(cvList, showSelectBtn = true) {
         updateCurrentCvIndex(delta = -1, cvList.length);
         fillDataIntoCvViewer(cvList);
     };
-}
-function formatVacancyTitle(vacancyTitle) {
-    const maxLength = 30;
-    return vacancyTitle.length > maxLength ? `${vacancyTitle.substr(0, maxLength)}...` : vacancyTitle;
 }
 
 function constructStepText(stepTitle) {
